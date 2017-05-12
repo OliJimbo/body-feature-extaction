@@ -27,7 +27,7 @@ make
 
 # Licensing  
 BodyFE is released under Commercial and GNU GPL v.3 open source license.  
-Commercial Projects: [Contact us for commercial license.] (guguant@yahoo.com)   
+Commercial Projects: [Contact us for commercial license.] (guguant[at]yahoo.com)   
 
 # Contributions
 To submit contributions and send GitHub pull request. You retain the copyright on your contributions.   
