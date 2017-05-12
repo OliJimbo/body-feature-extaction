@@ -6,9 +6,9 @@ Description:  
 
 Author: Yiming Sun  
 Date:   May 8th, 2017   
-Email:  guguant@yahoo.com 
+Email:  guguant[at]yahoo.com 
 
-Copyright (c) 2017- Yiming Sun <guguant@yahoo.com>  
+Copyright (c) 2017- Yiming Sun <guguant[at]yahoo.com>  
 All rights reserved  
 
 # Featuers
