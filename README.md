@@ -4,11 +4,11 @@ Description:  
 * The Project is about Computer graphics.It can self-collect the key data through a front and side image.  
   BodyEdgeDetection is only used in Eduction. 
 
-Author: Yiming Sun  
-Date:   May 8th, 2017   
-Email:  guguant[at]yahoo.com 
+Author: Sun Yiming  
+Date  :   May 8th, 2017   
+Email :  guguant[at]yahoo.com 
 
-Copyright (c) 2017- Yiming Sun <guguant[at]yahoo.com>  
+Copyright (c) 2017- Sun Yiming <guguant[at]yahoo.com>  
 All rights reserved  
 
 # Featuers
