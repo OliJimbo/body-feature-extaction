@@ -10,7 +10,7 @@ The Project [Body-Feature-Extaction](https://github.com/Guguant/Body-Feature-Ext
 
 # Usage
 1. setup OpenCv Vision library
-	```sh
+	```sudo
 	sudo apt-get install opencv (version > 3.0.0)
  	```
 2. install
