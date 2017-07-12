@@ -1,5 +1,5 @@
 # Body-Feature-Extaction  
-![GPL 3]https://img.shields.io/badge/license-GPL%203-green.svg
+![GPL 3](https://img.shields.io/badge/license-GPL%203-green.svg)
 Automatic Body Feature Extraction from the Front and Side Images.   
 Description:  
 * The Project is about Computer graphics.It can self-collect the key data through a front and side image.  
