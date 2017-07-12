@@ -1,4 +1,5 @@
 # Body-Feature-Extaction  
+![logo_zhi](https://github.com/Guguant/body-feature-extaction/blob/master/img/body.png)  
 ![GPL 3](https://img.shields.io/badge/license-GPL%203-green.svg)  
 Automatic Body Feature Extraction from the Front and Side Images.   
 The Project is about Computer graphics.It can self-collect the key data through a front and side image.  
