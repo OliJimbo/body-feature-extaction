@@ -1,8 +1,8 @@
 #include "armpoint.h"
 /*
- * leftpoint1    :  左活动点 
+ * leftpoint1   :  左活动点 
  * right        :  右活动点
- * middlepoint1  :  活动中点
+ * middlepoint1 :  活动中点
  */
 struct allarmpit leftpoint1, rightpoint1, middlepoint1;
 
@@ -155,7 +155,7 @@ void get_right_arm_point(cv::Mat& edge, int start_line, struct allarmpit *right_
 	middlepoint1.y = start_line - 50;		      // y 为图片纵坐标
 
 	/*
-     * 种子搜索点的位置如何选取
+	 * 种子搜索点的位置如何选取
 	 * ? 先找到手的坐标
 	 *
 	 *
