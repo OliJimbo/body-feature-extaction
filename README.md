@@ -31,7 +31,7 @@ https://github.com/Guguant/body-feature-extaction/blob/master/NEWS.md
 
 # Authors
 Sun Yiming - [Guguant](https://github.com/Guguant)  
-Email: guguant[*at*]yahoo.com
+Email: guguant[you know]yahoo[dot]com
 
 # Licensing  
 BodyFE is released under Commercial and [GNU GPL v.3](https://www.gnu.org/licenses/gpl-3.0.en.html) open source license.  
