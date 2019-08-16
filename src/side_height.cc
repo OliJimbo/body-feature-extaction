@@ -1,54 +1,54 @@
 #include "side_height.h"
 
 /*
- * ÑĞ¾¿¶ÔÏó: ÈËÌå²àÃæÍ¼
- * ·½·¨£ºÍ¨¹ıÈËÌå²àÃæÍ¼£¬ÈËÌåÉí¸ßµÄÏñËØµã£¬¼ÆËãÒ»¸öÏñËØ¶ÔÓ¦Êµ¼ÊÏñËØµÄ³ß´ç
+ * ç ”ç©¶å¯¹è±¡: äººä½“ä¾§é¢å›¾
+ * æ–¹æ³•ï¼šé€šè¿‡äººä½“ä¾§é¢å›¾ï¼Œäººä½“èº«é«˜çš„åƒç´ ç‚¹ï¼Œè®¡ç®—ä¸€ä¸ªåƒç´ å¯¹åº”å®é™…åƒç´ çš„å°ºå¯¸
  */
 
 void GetRatio(cv::Mat& edge, double height,double* Pix_Ratio) {
-	cv::Mat outImage = edge.clone();
-	int rowNumber = outImage.rows;	//source image ĞĞÊı
-	int colNumber = outImage.cols;  //source image ÁĞÊı
-	int count = 0;					//count: ´æ´¢Ã¿Ò»ĞĞÏñËØÖµÎª255µÄÏñËØµÄ¸öÊı
+    cv::Mat outImage = edge.clone();
+    int rowNumber = outImage.rows;  //source image è¡Œæ•°
+    int colNumber = outImage.cols;  //source image åˆ—æ•°
+    int count = 0;                  //count: å­˜å‚¨æ¯ä¸€è¡Œåƒç´ å€¼ä¸º255çš„åƒç´ çš„ä¸ªæ•°
 
-	/*
-	 * up  : ÈËÌå²àÃæºÚ°×¶şÖµÍ¼ÉÏÏŞ, Í·¶¥×ø±ê
-	 * down: ÈËÌå²àÃæºÚ°×¶şÖµÍ¼ÏÂÏŞ, ½Åµ××ø±ê
-	 */
-	int up = 0, down = 0;
+    /*
+     * up  : äººä½“ä¾§é¢é»‘ç™½äºŒå€¼å›¾ä¸Šé™, å¤´é¡¶åæ ‡
+     * down: äººä½“ä¾§é¢é»‘ç™½äºŒå€¼å›¾ä¸‹é™, è„šåº•åæ ‡
+     */
+    int up = 0, down = 0;
 
-	uchar* data;
-	// Ñ°ÕÒÈËÌå²àÃæºÚ°×¶şÖµÍ¼ÉÏÏŞ up Í·¶¥×ø±ê
-	for (int i = 0; i < rowNumber; i++) {       // ĞĞÑ­»·
-		data = outImage.ptr<uchar>(i);			// »ñµÃµÚiĞĞµÄÊ×µØÖ·
-		for (int j = 0; j < colNumber; j++) {   // ÁĞÑ­»·
-			if (data[j] == 255) {
-				up = i;
-				break;
-			}
-		}
-		if (up > 0){
-			break;
-		}
-	}
+    uchar* data;
+    // å¯»æ‰¾äººä½“ä¾§é¢é»‘ç™½äºŒå€¼å›¾ä¸Šé™ up å¤´é¡¶åæ ‡
+    for (int i = 0; i < rowNumber; i++) { // è¡Œå¾ªç¯
+        data = outImage.ptr<uchar>(i); // è·å¾—ç¬¬iè¡Œçš„é¦–åœ°å€
+        for (int j = 0; j < colNumber; j++) { // åˆ—å¾ªç¯
+            if (data[j] == 255) {
+                up = i;
+                break;
+            }
+        }
+        if (up > 0){
+            break;
+        }
+    }
 
-	// Ñ°ÕÒÈËÌå²àÃæºÚ°×¶şÖµÍ¼ÏÂÏŞ down ½Åµ××ø±ê
-	for (int i = rowNumber - 1; i > 0; i--){
-		data = outImage.ptr<uchar>(i);
-		for (int j = 0; j < colNumber; j++) {
-			if (data[j] == 255) {
-				down = i;
-				break;
-			}
-		}
-		if (down > 0) {
-			break;
-		}
-	}
+    // å¯»æ‰¾äººä½“ä¾§é¢é»‘ç™½äºŒå€¼å›¾ä¸‹é™ down è„šåº•åæ ‡
+    for (int i = rowNumber - 1; i > 0; i--){
+        data = outImage.ptr<uchar>(i);
+        for (int j = 0; j < colNumber; j++) {
+            if (data[j] == 255) {
+                down = i;
+                break;
+            }
+        }
+        if (down > 0) {
+            break;
+        }
+    }
 
-	// ¼ÆËãÒ»¸ö±ÈÀı Ratio£¨Ò»¸öÏñËØµÄÊµ¼Ê³¤¶È£©
-	*Pix_Ratio = height * 1.0 / (down - up + 1);
-	cout << "|------- Side  ---------|" << endl;
-	cout << "head position: " << up   << endl;
-	cout << "foot position: " << down << endl;
+    // è®¡ç®—ä¸€ä¸ªæ¯”ä¾‹ Ratioï¼ˆä¸€ä¸ªåƒç´ çš„å®é™…é•¿åº¦ï¼‰
+    *Pix_Ratio = height * 1.0 / (down - up + 1);
+    cout << "|------- Side  ---------|" << endl;
+    cout << "head position: " << up   << endl;
+    cout << "foot position: " << down << endl;
 }

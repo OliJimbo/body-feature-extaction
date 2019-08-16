@@ -2,245 +2,238 @@
 
 using namespace cv;
 /*
- * void get_BinaryImage()    »ñµÃºÚ°×¶şÖµÍ¼
- * void fillHole()           Ìî³ä¿ÕÏ¶
- * void RemoveSmallRegion()  ÒÆ³ıĞ¡ÇøÓò
+ * void get_BinaryImage()    è·å¾—é»‘ç™½äºŒå€¼å›¾
+ * void fillHole()           å¡«å……ç©ºéš™
+ * void RemoveSmallRegion()  ç§»é™¤å°åŒºåŸŸ
  */
-void get_BinaryImage(const cv::Mat srcImage, cv::Mat &dstBw); 
-void fillHole(const cv::Mat srcBw, cv::Mat &dstBw);	
+void get_BinaryImage(const cv::Mat srcImage, cv::Mat &dstBw);
+void fillHole(const cv::Mat srcBw, cv::Mat &dstBw);
 void RemoveSmallRegion(cv::Mat& Src, cv::Mat& Dst, int AreaLimit, int CheckMode, int NeihborMode);
 
 /*
- * get_BinaryImage() ¶ÔÔ­Í¼Ïñ½øĞĞ´¦Àí£¬µÃµ½ºÚ°×¶şÖµÍ¼
- * ²ÎÊı
- *		srcImage: Ô­Í¼Ïñ
- *		dstBw   : ºÚ°×¶şÖµÍ¼
+ * get_BinaryImage() å¯¹åŸå›¾åƒè¿›è¡Œå¤„ç†ï¼Œå¾—åˆ°é»‘ç™½äºŒå€¼å›¾
+ * å‚æ•°
+ *        srcImage: åŸå›¾åƒ
+ *        dstBw   : é»‘ç™½äºŒå€¼å›¾
  */
 void get_BinaryImage(const cv::Mat srcImage, cv::Mat &dstBw) {
-	//¡¾1¡¿½«Í¼Æ¬×ªÎª»Ò¶ÈÍ¼
-	cv::Mat srcImage_Gray;
-	cvtColor(srcImage, srcImage_Gray, COLOR_BGR2GRAY);
-	//cvtColor(srcImage, srcImage_Gray, 6);
+    //ã€1ã€‘å°†å›¾ç‰‡è½¬ä¸ºç°åº¦å›¾
+    cv::Mat srcImage_Gray;
+    cvtColor(srcImage, srcImage_Gray, COLOR_BGR2GRAY);
+    //cvtColor(srcImage, srcImage_Gray, 6);
 
-	//¡¾2¡¿¸ßË¹ÂË²¨ Ïû³ı¸ßË¹ÔëÉù
-	cv::Mat srcImage_Gray_Gauss;
-	srcImage_Gray_Gauss = srcImage_Gray;
-	GaussianBlur(srcImage_Gray, srcImage_Gray_Gauss, cv::Size(3, 3), 0, 0);
+    //ã€2ã€‘é«˜æ–¯æ»¤æ³¢ æ¶ˆé™¤é«˜æ–¯å™ªå£°
+    cv::Mat srcImage_Gray_Gauss;
+    srcImage_Gray_Gauss = srcImage_Gray;
+    GaussianBlur(srcImage_Gray, srcImage_Gray_Gauss, cv::Size(3, 3), 0, 0);
 
-	//¡¾3¡¿cannyËã×Ó±ßÔµ¼ì²â£¬edge±£´æÍ¼ÏñµÄ±ßÔµ
-	cv::Mat edge = srcImage_Gray_Gauss;
-	blur(edge, srcImage_Gray_Gauss, cv::Size(3, 3));//3x3ÄÚºË½µÔë
-	//Canny(srcImage_Gray_Gauss, edge, 30, 15, 3); // »ñµÃÍ¼Ïñ±ßÔµ, µ÷½ÚcannyµÄºóÈıÎ»²ÎÊı
-	Canny(srcImage_Gray_Gauss, edge, 30, 15, 3);   // »ñµÃÍ¼Ïñ±ßÔµ	
+    //ã€3ã€‘cannyç®—å­è¾¹ç¼˜æ£€æµ‹ï¼Œedgeä¿å­˜å›¾åƒçš„è¾¹ç¼˜
+    cv::Mat edge = srcImage_Gray_Gauss;
+    blur(edge, srcImage_Gray_Gauss, cv::Size(3, 3));//3x3å†…æ ¸é™å™ª
+    //Canny(srcImage_Gray_Gauss, edge, 30, 15, 3); // è·å¾—å›¾åƒè¾¹ç¼˜, è°ƒèŠ‚cannyçš„åä¸‰ä½å‚æ•°
+    Canny(srcImage_Gray_Gauss, edge, 30, 15, 3);   // è·å¾—å›¾åƒè¾¹ç¼˜    
 
-	//¡¾4¡¿ÅòÕÍ²Ù×÷,Ìî³ä±ßÔµ·ìÏ¶
-	Mat element = getStructuringElement(MORPH_RECT, cv::Size(3, 3));
-	//cv::Mat element = getStructuringElement(0, cv::Size(3, 3));
+    //ã€4ã€‘è†¨èƒ€æ“ä½œ,å¡«å……è¾¹ç¼˜ç¼éš™
+    Mat element = getStructuringElement(MORPH_RECT, cv::Size(3, 3));
+    //cv::Mat element = getStructuringElement(0, cv::Size(3, 3));
 
-	cv::Mat edge_temp;
-	edge_temp = edge;
-	for (int i = 0;i < 1;i++) { // ÅòÕÍÒ»´Î
-		dilate(edge_temp, edge, element);
-		edge_temp = edge;
-	}
+    cv::Mat edge_temp;
+    edge_temp = edge;
+    for (int i = 0;i < 1;i++) { // è†¨èƒ€ä¸€æ¬¡
+        dilate(edge_temp, edge, element);
+        edge_temp = edge;
+    }
 
-	//¡¾5¡¿Ìî³ä
-	for (int i = 0;i < 1;i++) // Ìî³ä1´Î
-	{
-		fillHole(edge_temp, edge);
-		edge_temp = edge;
-	}
-	threshold(edge_temp, edge, 150, 255, CV_THRESH_BINARY); // Í¼Ïñ¶şÖµ»¯
-															//blur(edge, edge, Size(3, 3));	//3x3ÄÚºË½µÔë
+    //ã€5ã€‘å¡«å……
+    for (int i = 0;i < 1;i++) // å¡«å……1æ¬¡
+    {
+        fillHole(edge_temp, edge);
+        edge_temp = edge;
+    }
+    threshold(edge_temp, edge, 150, 255, CV_THRESH_BINARY); // å›¾åƒäºŒå€¼åŒ–
+                                                            //blur(edge, edge, Size(3, 3));    //3x3å†…æ ¸é™å™ª
 
-	cv::Mat Dst = cv::Mat::zeros(edge.size(), CV_8UC1);
-	RemoveSmallRegion(edge, Dst, 2000, 1, 1);  // 8ÁÚÓò, Ïû³ı Ãæ»ı < 2000 ¸öÏñËØµãµÄĞ¡ÇøÓò
-										       // blur(Dst, Dst, Size(3, 3));	//3x3ÄÚºË½µÔë
-	dstBw = Dst;
+    cv::Mat Dst = cv::Mat::zeros(edge.size(), CV_8UC1);
+    RemoveSmallRegion(edge, Dst, 2000, 1, 1);  // 8é‚»åŸŸ, æ¶ˆé™¤ é¢ç§¯ < 2000 ä¸ªåƒç´ ç‚¹çš„å°åŒºåŸŸ
+                                               // blur(Dst, Dst, Size(3, 3));    //3x3å†…æ ¸é™å™ª
+    dstBw = Dst;
 }
-
-
 
 /*
  * fillHole
- * function: Ìî³äÂÖÀªÇøÓòÄÚµÄ²¿·Ö
- * ²ÎÊı      srcBw : source image
+ * function: å¡«å……è½®å»“åŒºåŸŸå†…çš„éƒ¨åˆ†
+ * å‚æ•°      srcBw : source image
  *           dstBW :  dst image
  */
 void fillHole(const cv::Mat srcBw, cv::Mat &dstBw)
 {
-	cv::Size m_Size = srcBw.size();
+    cv::Size m_Size = srcBw.size();
 
-	//ÑÓÕ¹Í¼Ïñ
+    //å»¶å±•å›¾åƒ
+    cv::Mat Temp = cv::Mat::zeros(m_Size.height + 2, m_Size.width + 2, srcBw.type());
+    srcBw.copyTo(Temp(cv::Range(1, m_Size.height + 1), cv::Range(1, m_Size.width + 1)));
 
-	cv::Mat Temp = cv::Mat::zeros(m_Size.height + 2, m_Size.width + 2, srcBw.type());
-	srcBw.copyTo(Temp(cv::Range(1, m_Size.height + 1), cv::Range(1, m_Size.width + 1)));
+    // floofFill æ¼«æ°´ç®—æ³•
+    floodFill(Temp, cv::Point(0, 0), cv::Scalar(255));
 
-	// floofFill ÂşË®Ëã·¨
+    //è£å‰ªå»¶å±•çš„å›¾åƒ
+    cv::Mat cutImg;
+    Temp(cv::Range(1, m_Size.height + 1), cv::Range(1, m_Size.width + 1)).copyTo(cutImg);
 
-	floodFill(Temp, cv::Point(0, 0), cv::Scalar(255));
-
-	//²Ã¼ôÑÓÕ¹µÄÍ¼Ïñ
-
-	cv::Mat cutImg;
-	Temp(cv::Range(1, m_Size.height + 1), cv::Range(1, m_Size.width + 1)).copyTo(cutImg);
-
-	dstBw = srcBw | (~cutImg);
+    dstBw = srcBw | (~cutImg);
 }
 
 /*
  * RemoveSmallRegion
- * function: Ïû³ıÍ¼ÏñÖĞĞ¡ÇøÓò£¬Ïû³ı¸ÉÈÅÏî
- * ²ÎÊı    
- *		Src		   : Ô­Í¼Ïñ	 
- *		Dst		   : Ä¿±êÊä³öÍ¼Ïñ
- *		AreaLimit  : Ô¤È¥³ıĞ¡ÇøÓòÃæ»ı
- *		CheckMode  : 0´ú±íÈ¥³ıºÚÇøÓò, 1´ú±íÈ¥³ı°×ÇøÓò(pix = 255);
- *		NeihborMode: 0´ú±í 4 ÁÚÓò   , 1´ú±í 8 ÁÚÓò;
+ * function: æ¶ˆé™¤å›¾åƒä¸­å°åŒºåŸŸï¼Œæ¶ˆé™¤å¹²æ‰°é¡¹
+ * å‚æ•°
+ *        Src           : åŸå›¾åƒ
+ *        Dst           : ç›®æ ‡è¾“å‡ºå›¾åƒ
+ *        AreaLimit  : é¢„å»é™¤å°åŒºåŸŸé¢ç§¯
+ *        CheckMode  : 0ä»£è¡¨å»é™¤é»‘åŒºåŸŸ, 1ä»£è¡¨å»é™¤ç™½åŒºåŸŸ(pix = 255);
+ *        NeihborMode: 0ä»£è¡¨ 4 é‚»åŸŸ   , 1ä»£è¡¨ 8 é‚»åŸŸ;
  */
 void RemoveSmallRegion(cv::Mat& Src, cv::Mat& Dst, int AreaLimit, int CheckMode, int NeihborMode)
 {
-	//¼ÇÂ¼³ıÈ¥µÄĞ¡ÇøÓòµÄ¸öÊı 
-	int RemoveCount = 0; 
-	
-	/*
-	 * Pointlabel: ¼ÇÂ¼Ã¿¸öÏñËØµã¼ìÑé×´Ì¬µÄ±êÇ©£¬³õÊ¼»¯Îª 0
-	 *		0 ´ú±í Î´¼ì²é
-	 *		1 ´ú±í ÕıÔÚ¼ì²é
-	 *		2 ´ú±í ¼ì²é²»ºÏ¸ñ£¨ĞèÒª·´×ªÑÕÉ«
-	 *		3 ´ú±í ¼ì²éºÏ¸ñ»ò²»Ğè¼ì²é
-	 */
-	cv::Mat Pointlabel = cv::Mat::zeros(Src.size(), CV_8UC1); 
+    //è®°å½•é™¤å»çš„å°åŒºåŸŸçš„ä¸ªæ•° 
+    int RemoveCount = 0; 
 
-	//CheckMode = 1, È¥³ı white ÇøÓò £¨ÏñËØÖµ = 255£©
-	if (CheckMode == 1)
-	{
-		//cout << "Mode: È¥³ıĞ¡ÇøÓò. " << endl;
-		for (int i = 0; i < Src.rows; ++i)
-		{
-			uchar* iData = Src.ptr<uchar>(i); // »ñµÃ cv::Mat::Src µÚ i ĞĞÊ×µØÖ·
-			uchar* iLabel = Pointlabel.ptr<uchar>(i);
+    /*
+     * Pointlabel: è®°å½•æ¯ä¸ªåƒç´ ç‚¹æ£€éªŒçŠ¶æ€çš„æ ‡ç­¾ï¼Œåˆå§‹åŒ–ä¸º 0
+     *        0 ä»£è¡¨ æœªæ£€æŸ¥
+     *        1 ä»£è¡¨ æ­£åœ¨æ£€æŸ¥
+     *        2 ä»£è¡¨ æ£€æŸ¥ä¸åˆæ ¼ï¼ˆéœ€è¦åè½¬é¢œè‰²
+     *        3 ä»£è¡¨ æ£€æŸ¥åˆæ ¼æˆ–ä¸éœ€æ£€æŸ¥
+     */
+    cv::Mat Pointlabel = cv::Mat::zeros(Src.size(), CV_8UC1);
 
-			for (int j = 0; j < Src.cols; ++j)
-			{
-				if (iData[j] < 10)
-				{
-					iLabel[j] = 3; // ÏñËØÖµ < 10, ÏñËØµãÑÕÉ«ÎªºÚÉ«£¬²»ĞèÒª·´×ª
-				}
-			}
-		}
-	}
-	// È¥³ıblackÇøÓò £¨ÏñËØÖµ = 0£©
-	else
-	{
-		//cout << "Mode: È¥³ı¿×¶´. " << endl;
-		for (int i = 0; i < Src.rows; ++i)
-		{
-			uchar* iData = Src.ptr<uchar>(i); // È¡µÃ Src µÚ i ĞĞÊ×µØÖ·
-			uchar* iLabel = Pointlabel.ptr<uchar>(i);
-			for (int j = 0; j < Src.cols; ++j)
-			{
-				if (iData[j] > 10)
-				{
-					iLabel[j] = 3; // ÏñËØÖµ > 10, ÏñËØµãÑÕÉ«Îª°×É«£¬²»ĞèÒª´¦Àí
-				}
-			}
-		}
-	}
+    //CheckMode = 1, å»é™¤ white åŒºåŸŸ ï¼ˆåƒç´ å€¼ = 255ï¼‰
+    if (CheckMode == 1)
+    {
+        //cout << "Mode: å»é™¤å°åŒºåŸŸ. " << endl;
+        for (int i = 0; i < Src.rows; ++i)
+        {
+            uchar* iData = Src.ptr<uchar>(i); // è·å¾— cv::Mat::Src ç¬¬ i è¡Œé¦–åœ°å€
+            uchar* iLabel = Pointlabel.ptr<uchar>(i);
 
-	// NeihborPos ¼ÇÂ¼ÁÚÓòµãÎ»ÖÃ 
-	vector <cv::Point2i> NeihborPos;   
-	NeihborPos.push_back(cv::Point2i(-1,  0));
-	NeihborPos.push_back(cv::Point2i( 1,  0));
-	NeihborPos.push_back(cv::Point2i( 0, -1));
-	NeihborPos.push_back(cv::Point2i( 0,  1));
+            for (int j = 0; j < Src.cols; ++j)
+            {
+                if (iData[j] < 10)
+                {
+                    iLabel[j] = 3; // åƒç´ å€¼ < 10, åƒç´ ç‚¹é¢œè‰²ä¸ºé»‘è‰²ï¼Œä¸éœ€è¦åè½¬
+                }
+            }
+        }
+    }
+    // å»é™¤blackåŒºåŸŸ ï¼ˆåƒç´ å€¼ = 0ï¼‰
+    else
+    {
+        //cout << "Mode: å»é™¤å­”æ´. " << endl;
+        for (int i = 0; i < Src.rows; ++i)
+        {
+            uchar* iData = Src.ptr<uchar>(i); // å–å¾— Src ç¬¬ i è¡Œé¦–åœ°å€
+            uchar* iLabel = Pointlabel.ptr<uchar>(i);
+            for (int j = 0; j < Src.cols; ++j)
+            {
+                if (iData[j] > 10)
+                {
+                    iLabel[j] = 3; // åƒç´ å€¼ > 10, åƒç´ ç‚¹é¢œè‰²ä¸ºç™½è‰²ï¼Œä¸éœ€è¦å¤„ç†
+                }
+            }
+        }
+    }
 
-	if ( NeihborMode == 1 )
-	{
-		//cout << "Neighbor mode: 8ÁÚÓò." << endl;
-		NeihborPos.push_back(cv::Point2i(-1, -1));
-		NeihborPos.push_back(cv::Point2i(-1,  1));
-		NeihborPos.push_back(cv::Point2i( 1, -1));
-		NeihborPos.push_back(cv::Point2i( 1,  1));
-	}
-	else {
-		//cout << "Neighbor mode: 4ÁÚÓò." << endl;
-	}
+    // NeihborPos è®°å½•é‚»åŸŸç‚¹ä½ç½® 
+    vector <cv::Point2i> NeihborPos;
+    NeihborPos.push_back(cv::Point2i(-1,  0));
+    NeihborPos.push_back(cv::Point2i( 1,  0));
+    NeihborPos.push_back(cv::Point2i( 0, -1));
+    NeihborPos.push_back(cv::Point2i( 0,  1));
 
-	// NeihborCount = 4£¨4ÁÚÓò£© NeihborCount = 8£¨8ÁÚÓò£©
-	int NeihborCount = 4 + 4 * NeihborMode; 
-	int CurrX = 0, CurrY = 0;
+    if (NeihborMode == 1)
+    {
+        //cout << "Neighbor mode: 8é‚»åŸŸ." << endl;
+        NeihborPos.push_back(cv::Point2i(-1, -1));
+        NeihborPos.push_back(cv::Point2i(-1,  1));
+        NeihborPos.push_back(cv::Point2i( 1, -1));
+        NeihborPos.push_back(cv::Point2i( 1,  1));
+    }
+    else {
+        //cout << "Neighbor mode: 4é‚»åŸŸ." << endl;
+    }
 
-	// ¿ªÊ¼¼ì²â  
-	for (int i = 0; i < Src.rows; ++i)
-	{
-		uchar* iLabel = Pointlabel.ptr<uchar>(i); // È¡µÃ Pointlabel µÚ i ĞĞµÄÊ×µØÖ·
-		for (int j = 0; j < Src.cols; ++j)
-		{
-			if (iLabel[j] == 0)
-			{
-				//********¿ªÊ¼ point(i, j)µã´¦µÄ¼ì²é***********//
-				vector<cv::Point2i> GrowBuffer;          //¶ÑÕ»£¬ÓÃÓÚ´æ´¢Éú³¤µã  
-				GrowBuffer.push_back(cv::Point2i(j, i));
-				Pointlabel.at<uchar>(i, j) = 1;
-				int CheckResult = 0;                 //ÓÃÓÚÅĞ¶Ï½á¹û£¨ÊÇ·ñ³¬³ö´óĞ¡£©£¬0ÎªÎ´³¬³ö£¬1Îª³¬³ö  
+    // NeihborCount = 4ï¼ˆ4é‚»åŸŸï¼‰ NeihborCount = 8ï¼ˆ8é‚»åŸŸï¼‰
+    int NeihborCount = 4 + 4 * NeihborMode; 
+    int CurrX = 0, CurrY = 0;
 
-				for (int z = 0; z < int(GrowBuffer.size()); z++)
-				{
+    // å¼€å§‹æ£€æµ‹
+    for (int i = 0; i < Src.rows; ++i)
+    {
+        uchar* iLabel = Pointlabel.ptr<uchar>(i); // å–å¾— Pointlabel ç¬¬ i è¡Œçš„é¦–åœ°å€
+        for (int j = 0; j < Src.cols; ++j)
+        {
+            if (iLabel[j] == 0)
+            {
+                //********å¼€å§‹ point(i, j)ç‚¹å¤„çš„æ£€æŸ¥***********//
+                vector<cv::Point2i> GrowBuffer;          //å †æ ˆï¼Œç”¨äºå­˜å‚¨ç”Ÿé•¿ç‚¹
+                GrowBuffer.push_back(cv::Point2i(j, i));
+                Pointlabel.at<uchar>(i, j) = 1;
+                int CheckResult = 0;                 //ç”¨äºåˆ¤æ–­ç»“æœï¼ˆæ˜¯å¦è¶…å‡ºå¤§å°ï¼‰ï¼Œ0ä¸ºæœªè¶…å‡ºï¼Œ1ä¸ºè¶…å‡º
 
-					for (int q = 0; q < NeihborCount; q++) //¼ì²éËÄ¸öÁÚÓòµã  
-					{
-						CurrX = GrowBuffer.at(z).x + NeihborPos.at(q).x;
-						CurrY = GrowBuffer.at(z).y + NeihborPos.at(q).y;
-						if (CurrX >= 0 && CurrX < Src.cols && CurrY >= 0 && CurrY < Src.rows) //·ÀÖ¹Ô½½ç  
-						{
-							if (Pointlabel.at<uchar>(CurrY, CurrX) == 0)
-							{
-								GrowBuffer.push_back(cv::Point2i(CurrX, CurrY)); //ÁÚÓòµã¼ÓÈëbuffer  
-								Pointlabel.at<uchar>(CurrY, CurrX) = 1;      /*¸üĞÂÁÚÓòµãµÄ¼ì²é±êÇ©£¬±ÜÃâÖØ¸´¼ì²é
-																			 1 ´ú±íÕıÔÚ¼ì²é */
-							}
-						}
-					}
+                for (int z = 0; z < int(GrowBuffer.size()); z++)
+                {
+                    for (int q = 0; q < NeihborCount; q++) //æ£€æŸ¥å››ä¸ªé‚»åŸŸç‚¹
+                    {
+                        CurrX = GrowBuffer.at(z).x + NeihborPos.at(q).x;
+                        CurrY = GrowBuffer.at(z).y + NeihborPos.at(q).y;
+                        if (CurrX >= 0 && CurrX < Src.cols && CurrY >= 0 && CurrY < Src.rows) //é˜²æ­¢è¶Šç•Œ
+                        {
+                            if (Pointlabel.at<uchar>(CurrY, CurrX) == 0)
+                            {
+                                GrowBuffer.push_back(cv::Point2i(CurrX, CurrY)); //é‚»åŸŸç‚¹åŠ å…¥buffer
+                                Pointlabel.at<uchar>(CurrY, CurrX) = 1;      /*æ›´æ–°é‚»åŸŸç‚¹çš„æ£€æŸ¥æ ‡ç­¾ï¼Œé¿å…é‡å¤æ£€æŸ¥
+                                                                             1 ä»£è¡¨æ­£åœ¨æ£€æŸ¥ */
+                            }
+                        }
+                    }
+                }
+                if (int(GrowBuffer.size()) > AreaLimit) {
+                    CheckResult = 2; //åˆ¤æ–­ç»“æœï¼ˆæ˜¯å¦è¶…å‡ºé™å®šçš„é¢ç§¯areaï¼‰ï¼Œ1ä¸ºæœªè¶…å‡ºï¼Œ2ä¸ºè¶…å‡º
+                }
+                else {
+                    CheckResult = 1; // GrowBuffer.size() < AreaLimit, å¾…æ¶ˆé™¤çš„é¡¹
+                    RemoveCount++;   // ç§»é™¤å°åŒºåŸŸçš„è®¡æ•° + 1
+                }
+                for (int z = 0; z < int(GrowBuffer.size()); z++)  //æ›´æ–°Labelè®°å½•
+                {
+                    CurrX = GrowBuffer.at(z).x;
+                    CurrY = GrowBuffer.at(z).y;
+                    Pointlabel.at<uchar>(CurrY, CurrX) += CheckResult;
+                }
+                //********ç»“æŸè¯¥ç‚¹å¤„çš„æ£€æŸ¥**********//
+            }
+        }
+    }
 
-				}
-				if (int(GrowBuffer.size()) > AreaLimit) {
-					CheckResult = 2; //ÅĞ¶Ï½á¹û£¨ÊÇ·ñ³¬³öÏŞ¶¨µÄÃæ»ıarea£©£¬1ÎªÎ´³¬³ö£¬2Îª³¬³ö  
-				}
-				else {
-					CheckResult = 1; // GrowBuffer.size() < AreaLimit, ´ıÏû³ıµÄÏî
-					RemoveCount++;   // ÒÆ³ıĞ¡ÇøÓòµÄ¼ÆÊı + 1
-				}
-				for (int z = 0; z < int(GrowBuffer.size()); z++)  //¸üĞÂLabel¼ÇÂ¼  
-				{
-					CurrX = GrowBuffer.at(z).x;
-					CurrY = GrowBuffer.at(z).y;
-					Pointlabel.at<uchar>(CurrY, CurrX) += CheckResult;
-				}
-				//********½áÊø¸Ãµã´¦µÄ¼ì²é**********//
-			}
-		}
-	}
-
-	CheckMode = 255 * (1 - CheckMode);
-	//¿ªÊ¼·´×ªÃæ»ı¹ıĞ¡µÄÇøÓò
-	for (int i = 0; i < Src.rows; ++i)
-	{
-		uchar* iData = Src.ptr<uchar>(i);    // »ñµÃ Src µÚ i ĞĞµÄÊ×µØÖ·
-		uchar* iDstData = Dst.ptr<uchar>(i); // »ñµÃ Dst µÚ i ĞĞµÄÊ×µØÖ· 
-		uchar* iLabel = Pointlabel.ptr<uchar>(i);
-		for (int j = 0; j < Src.cols; ++j)
-		{
-			if (iLabel[j] == 2) // iLabel = 2, ĞèÒª·´×ªÑÕÉ«
-			{
-				iDstData[j] = CheckMode;
-			}
-			else if (iLabel[j] == 3) // iLabel = 3, ²»ĞèÒª·´×ªÑÕÉ«
-			{
-				iDstData[j] = iData[j];
-			}
-		}
-	}
-	//cout << "AreaLimit : " << AreaLimit << endl;
-	//cout << RemoveCount << " objects was removed." << endl;
+    CheckMode = 255 * (1 - CheckMode);
+    //å¼€å§‹åè½¬é¢ç§¯è¿‡å°çš„åŒºåŸŸ
+    for (int i = 0; i < Src.rows; ++i)
+    {
+        uchar* iData = Src.ptr<uchar>(i);    // è·å¾— Src ç¬¬ i è¡Œçš„é¦–åœ°å€
+        uchar* iDstData = Dst.ptr<uchar>(i); // è·å¾— Dst ç¬¬ i è¡Œçš„é¦–åœ°å€
+        uchar* iLabel = Pointlabel.ptr<uchar>(i);
+        for (int j = 0; j < Src.cols; ++j)
+        {
+            if (iLabel[j] == 2) // iLabel = 2, éœ€è¦åè½¬é¢œè‰²
+            {
+                iDstData[j] = CheckMode;
+            }
+            else if (iLabel[j] == 3) // iLabel = 3, ä¸éœ€è¦åè½¬é¢œè‰²
+            {
+                iDstData[j] = iData[j];
+            }
+        }
+    }
+    //cout << "AreaLimit : " << AreaLimit << endl;
+    //cout << RemoveCount << " objects was removed." << endl;
 }

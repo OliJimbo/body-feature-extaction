@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __CONVERT_TO_BINARY_H__
+#define __CONVERT_TO_BINARY_H__
+
 #include "/usr/local/include/opencv2/opencv.hpp"
 #include "/usr/local/include/opencv2/highgui/highgui.hpp"
 #include "/usr/local/include/opencv2/imgproc/imgproc.hpp"
@@ -9,14 +11,13 @@
 using namespace std;
 
 /*
- * ×÷ÓÃ: ´¦ÀíÔ­Í¼£¬µÃµ½ ºÚ°×¶şÖµÍ¼
- * get_BinaryImage:		¶ÔÔ­Í¼Ïñ½øĞĞ´¦Àí£¬µÃµ½ºÚ°×¶şÖµÍ¼
- * fillHole:			Ìî³äÂÖÀªÄÚ²¿µÄÇøÓò
- * RemoveSmallRegion:	ÒÆ³ıºÚ°×¶şÖµÍ¼ÖĞ¶àÓàµÄĞ¡ÇøÓò
+ * ä½œç”¨: å¤„ç†åŸå›¾ï¼Œå¾—åˆ° é»‘ç™½äºŒå€¼å›¾
+ * get_BinaryImage:        å¯¹åŸå›¾åƒè¿›è¡Œå¤„ç†ï¼Œå¾—åˆ°é»‘ç™½äºŒå€¼å›¾
+ * fillHole:            å¡«å……è½®å»“å†…éƒ¨çš„åŒºåŸŸ
+ * RemoveSmallRegion:    ç§»é™¤é»‘ç™½äºŒå€¼å›¾ä¸­å¤šä½™çš„å°åŒºåŸŸ
  */
+void get_BinaryImage(const cv::Mat srcImage, cv::Mat &dstBw); // å¯¹åŸå›¾åƒè¿›è¡Œå¤„ç†ï¼Œå¾—åˆ°é»‘ç™½äºŒå€¼å›¾
+void fillHole(const cv::Mat srcBw, cv::Mat &dstBw);           // å¡«å……è½®å»“å†…éƒ¨çš„åŒºåŸŸ
+void RemoveSmallRegion(cv::Mat& Src, cv::Mat& Dst, int AreaLimit, int CheckMode, int NeihborMode); // ç§»é™¤å¤šä½™çš„å°åŒºåŸŸ
 
-
-void get_BinaryImage(const cv::Mat srcImage, cv::Mat &dstBw); // ¶ÔÔ­Í¼Ïñ½øĞĞ´¦Àí£¬µÃµ½ºÚ°×¶şÖµÍ¼
-void fillHole(const cv::Mat srcBw, cv::Mat &dstBw);			  // Ìî³äÂÖÀªÄÚ²¿µÄÇøÓò
-void RemoveSmallRegion(cv::Mat& Src, cv::Mat& Dst, int AreaLimit, int CheckMode, int NeihborMode); // ÒÆ³ı¶àÓàµÄĞ¡ÇøÓò
-
+#endif // __CONVERT_TO_BINARY_H__

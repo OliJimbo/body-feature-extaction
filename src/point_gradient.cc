@@ -1,127 +1,125 @@
 #include "point_gradient.h"
 
 /*
- *  Çó°ë²àÉíÌåµãÖ®¼äµÄĞ±ÂÊ
+ *  æ±‚åŠä¾§èº«ä½“ç‚¹ä¹‹é—´çš„æ–œç‡
  *
  */
 
-
 /*
- * ÅĞ¶ÏÁ½µãÖ®¼äµÄĞ±ÂÊÓëÉÏÒ»ÌõÏß¶ÎµÄĞ±ÂÊÊÇ·ñÏàµÈ
+ * åˆ¤æ–­ä¸¤ç‚¹ä¹‹é—´çš„æ–œç‡ä¸ä¸Šä¸€æ¡çº¿æ®µçš„æ–œç‡æ˜¯å¦ç›¸ç­‰
  */
 
 double get_gradient(DstPoint p1, DstPoint p2) {
-	// k Ğ±ÂÊ
-	double k = 0;
-	if ( p1.x == p2.x) {
-		k = INF;
-	}
-	else {
-		k = (p1.y - p2.y) * 1.0 / (p1.x - p2.x);
-	}
+    // k æ–œç‡
+    double k = 0;
+    if ( p1.x == p2.x) {
+        k = INF;
+    }
+    else {
+        k = (p1.y - p2.y) * 1.0 / (p1.x - p2.x);
+    }
 
-	// ·µ»ØĞ±ÂÊ
-	return (k);
+    // è¿”å›æ–œç‡
+    return (k);
 }
 
-
 /*
- * Çó×ó°ë²àÉíÌå±ßÔµ Á½µãÖ®¼äµÄĞ±ÂÊ£¬´Ó¶øÇóµÃÌØÕ÷µãµÄ¼¯ºÏ
+ * æ±‚å·¦åŠä¾§èº«ä½“è¾¹ç¼˜ ä¸¤ç‚¹ä¹‹é—´çš„æ–œç‡ï¼Œä»è€Œæ±‚å¾—ç‰¹å¾ç‚¹çš„é›†åˆ
  *
  */
 void Get_Left_PointGradient(cv::Mat& edge, vector<DstPoint> &Left_Gradient_Collection) {
-	cv::Mat outImage = edge.clone();
-	int rowNumber = outImage.rows;	//ĞĞÊı
-	int colNumber = outImage.cols;  //ÁĞÊı
+    cv::Mat outImage = edge.clone();
+    int rowNumber = outImage.rows;  //è¡Œæ•°
+    int colNumber = outImage.cols;  //åˆ—æ•°
 
-	/* 
-	 * p1 : Ç°Ò»¸ö½Úµã
-	 * p2 : ºóÒ»¸ö½Úµã
-	 */
-	DstPoint p1 = { 0, 0 };
-	DstPoint p2 = { 0, 0 };
+    /* 
+     * p1 : å‰ä¸€ä¸ªèŠ‚ç‚¹
+     * p2 : åä¸€ä¸ªèŠ‚ç‚¹
+     */
+    DstPoint p1 = { 0, 0 };
+    DstPoint p2 = { 0, 0 };
 
-	/*
-	 * k1 Ç°Ò»Ïß¶ÎµÄĞ±ÂÊ
-  	 * k2 ºóÁ½µãÖ®¼äµÄĞ±ÂÊ
-	 */
-	double k1 = 0.0;
-	double k2 = 0.0;
+    /*
+     * k1 å‰ä¸€çº¿æ®µçš„æ–œç‡
+     * k2 åä¸¤ç‚¹ä¹‹é—´çš„æ–œç‡
+     */
+    double k1 = 0.0;
+    double k2 = 0.0;
 
 
-	// Ë«²ãÑ­»·£¬±éÀúËùÓĞµÄÏñËØÖµ
-	for (int i = 0; i < rowNumber; i = i + 1) {     // ĞĞÑ­»·
-		uchar* data = outImage.ptr<uchar>(i); // »ñµÃµÚiĞĞµÄÊ×µØÖ·
+    // åŒå±‚å¾ªç¯ï¼Œéå†æ‰€æœ‰çš„åƒç´ å€¼
+    for (int i = 0; i < rowNumber; i = i + 1) { // è¡Œå¾ªç¯
+        uchar* data = outImage.ptr<uchar>(i); // è·å¾—ç¬¬iè¡Œçš„é¦–åœ°å€
 
-		for (int j = 0; j < colNumber; j++) { // ÁĞÑ­»·£¬Ñ°ÕÒ ×ó±ßÔµµã
-			if (data[j] == 255) {
-				p2.x = j;
-				p2.y = i;
+        for (int j = 0; j < colNumber; j++) { // åˆ—å¾ªç¯ï¼Œå¯»æ‰¾ å·¦è¾¹ç¼˜ç‚¹
+            if (data[j] == 255) {
+                p2.x = j;
+                p2.y = i;
 
-				k2 = get_gradient(p1, p2);
-				if (k1 == k2) {
-					Left_Gradient_Collection.pop_back();    // É¾³ı×îºóÒ»¸öÔªËØ
-					Left_Gradient_Collection.push_back(p2); // ½«ĞÂÔªËØ´æÈë Left_Gradient_Collection
-					p1 = p2;
-				}
-				else {
-					Left_Gradient_Collection.push_back(p2);
-					k1 = k2;
-					p1 = p2;
-				}
-				break;
-			}
-		}
-	}
+                k2 = get_gradient(p1, p2);
+                if (k1 == k2) {
+                    Left_Gradient_Collection.pop_back();    // åˆ é™¤æœ€åä¸€ä¸ªå…ƒç´ 
+                    Left_Gradient_Collection.push_back(p2); // å°†æ–°å…ƒç´ å­˜å…¥ Left_Gradient_Collection
+                    p1 = p2;
+                }
+                else {
+                    Left_Gradient_Collection.push_back(p2);
+                    k1 = k2;
+                    p1 = p2;
+                }
+                break;
+            }
+        }
+    }
 }
 
 /*
- * ÇóÓÒ°ë²àÉíÌå Á½µãÖ®¼äµÄĞ±ÂÊ£¬´Ó¶øÇóµÃÌØÕ÷µãµÄ¼¯ºÏ
+ * æ±‚å³åŠä¾§èº«ä½“ ä¸¤ç‚¹ä¹‹é—´çš„æ–œç‡ï¼Œä»è€Œæ±‚å¾—ç‰¹å¾ç‚¹çš„é›†åˆ
  *
  */
 void Get_Right_PointGradient(cv::Mat& edge, vector<DstPoint> &Right_Gradient_Collection) {
-	cv::Mat outImage = edge.clone();
-	int rowNumber = outImage.rows;	//ĞĞÊı
-	int colNumber = outImage.cols;  //ÁĞÊı
+    cv::Mat outImage = edge.clone();
+    int rowNumber = outImage.rows;  //è¡Œæ•°
+    int colNumber = outImage.cols;  //åˆ—æ•°
 
-	/*
-	* p1 : Ç°Ò»¸ö½Úµã
-	* p2 : ºóÒ»¸ö½Úµã
-	*/
-	DstPoint p1 = { 0, 0 };
-	DstPoint p2 = { 0, 0 };
+    /*
+    * p1 : å‰ä¸€ä¸ªèŠ‚ç‚¹
+    * p2 : åä¸€ä¸ªèŠ‚ç‚¹
+    */
+    DstPoint p1 = { 0, 0 };
+    DstPoint p2 = { 0, 0 };
 
-	/*
-	* k1 Ç°Ò»Ïß¶ÎµÄĞ±ÂÊ
-	* k2 ºóÁ½µãÖ®¼äµÄĞ±ÂÊ
-	*/
-	double k1 = 0.0;
-	double k2 = 0.0;
-
-
-	// Ë«²ãÑ­»·£¬±éÀúËùÓĞµÄÏñËØÖµ
-	for (int i = 0; i < rowNumber; i = i + 1) {       // ĞĞÑ­»·
-		uchar* data = outImage.ptr<uchar>(i); // »ñµÃµÚiĞĞµÄÊ×µØÖ·
+    /*
+    * k1 å‰ä¸€çº¿æ®µçš„æ–œç‡
+    * k2 åä¸¤ç‚¹ä¹‹é—´çš„æ–œç‡
+    */
+    double k1 = 0.0;
+    double k2 = 0.0;
 
 
-		for (int j = colNumber - 1; j >= 0; j--) {   // ÁĞÑ­»·
-			if (data[j] == 255) {
-				p2.x = j;
-				p2.y = i;
-				k2 = get_gradient(p1, p2);
-				if (k1 == k2) {
-					Right_Gradient_Collection.pop_back();    // É¾³ı×îºóÒ»¸öÔªËØ
-					Right_Gradient_Collection.push_back(p2); // ½«ĞÂÔªËØ´æÈë Left_Gradient_Collection
-					p1 = p2;
-				}
-				else {
-					Right_Gradient_Collection.push_back(p2);
-					k1 = k2;
-					p1 = p2;
-				}
+    // åŒå±‚å¾ªç¯ï¼Œéå†æ‰€æœ‰çš„åƒç´ å€¼
+    for (int i = 0; i < rowNumber; i = i + 1) { // è¡Œå¾ªç¯
+        uchar* data = outImage.ptr<uchar>(i);   // è·å¾—ç¬¬iè¡Œçš„é¦–åœ°å€
 
-				break;
-			}
-		}
-	}
+
+        for (int j = colNumber - 1; j >= 0; j--) { // åˆ—å¾ªç¯
+            if (data[j] == 255) {
+                p2.x = j;
+                p2.y = i;
+                k2 = get_gradient(p1, p2);
+                if (k1 == k2) {
+                    Right_Gradient_Collection.pop_back();    // åˆ é™¤æœ€åä¸€ä¸ªå…ƒç´ 
+                    Right_Gradient_Collection.push_back(p2); // å°†æ–°å…ƒç´ å­˜å…¥ Left_Gradient_Collection
+                    p1 = p2;
+                }
+                else {
+                    Right_Gradient_Collection.push_back(p2);
+                    k1 = k2;
+                    p1 = p2;
+                }
+
+                break;
+            }
+        }
+    }
 }

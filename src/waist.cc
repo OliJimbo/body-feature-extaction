@@ -3,58 +3,58 @@
 using namespace std;
 
 int FindWaist(cv::Mat& edge, const FindArea WaistArea) {
-	cv::Mat outImage = edge.clone();
-	int up = 0;                 // Ñü²¿Çø¼äÉÏÏŞ
-	int down_x = 0, down_y = 0; // Ñü²¿Çø¼äÏÂÏŞ
+    cv::Mat outImage = edge.clone();
+    int up = 0;                 // è…°éƒ¨åŒºé—´ä¸Šé™
+    int down_x = 0, down_y = 0; // è…°éƒ¨åŒºé—´ä¸‹é™
 
-	up = WaistArea.UpperLimit;
-	down_x = WaistArea.LowerLimit.x;
-	down_y = WaistArea.LowerLimit.y;
+    up = WaistArea.UpperLimit;
+    down_x = WaistArea.LowerLimit.x;
+    down_y = WaistArea.LowerLimit.y;
 
-	int count = 0;				//count: ´æ´¢Ã¿Ò»ĞĞÏñËØÖµÎª255µÄÏñËØµÄ¸öÊı
+    int count = 0; //count: å­˜å‚¨æ¯ä¸€è¡Œåƒç´ å€¼ä¸º255çš„åƒç´ çš„ä¸ªæ•°
 
-	vector<int>sum;
-	// Ë«²ãÑ­»·£¬±éÀúËùÓĞµÄÏñËØÖµ
-	for (int i = up + 10; i < down_y - 3; i++) {   // up -> down_y
-		uchar* data = outImage.ptr<uchar>(i); // »ñµÃµÚiĞĞµÄÊ×µØÖ·
-		count = 0;
+    vector<int>sum;
+    // åŒå±‚å¾ªç¯ï¼Œéå†æ‰€æœ‰çš„åƒç´ å€¼
+    for (int i = up + 10; i < down_y - 3; i++) { // up -> down_y
+        uchar* data = outImage.ptr<uchar>(i); // è·å¾—ç¬¬iè¡Œçš„é¦–åœ°å€
+        count = 0;
 
-		// ÏòÓÒËÑË÷
-		for (int j = down_x; j < edge.cols; j++) {   // ÁĞÑ­»·
-			if (data[j] == 255) {
-				count++;
-			}
-			if (data[j] == 0) {
-				break;
-			}
-		}
+        // å‘å³æœç´¢
+        for (int j = down_x; j < edge.cols; j++) { // åˆ—å¾ªç¯
+            if (data[j] == 255) {
+                count++;
+            }
+            if (data[j] == 0) {
+                break;
+            }
+        }
 
-		// Ïò×óËÑË÷
-		for (int j = down_x; j > 0; j--) {   // ÁĞÑ­»·
-			if (data[j] == 255) {
-				count++;
-			}
-			if (data[j] == 0) {
-				break;
-			}
-		}
+        // å‘å·¦æœç´¢
+        for (int j = down_x; j > 0; j--) { // åˆ—å¾ªç¯
+            if (data[j] == 255) {
+                count++;
+            }
+            if (data[j] == 0) {
+                break;
+            }
+        }
 
-		// ÏñËØÊı¾İÑ¹Èësum
-		sum.push_back(count);
-	}
+        // åƒç´ æ•°æ®å‹å…¥sum
+        sum.push_back(count);
+    }
 
-	// ½á¹û Ä¬ÈÏ MIN (sum) = Ñü
-	int result = 0, flag = 0;
-	result = edge.cols;
+    // ç»“æœ é»˜è®¤ MIN (sum) = è…°
+    int result = 0, flag = 0;
+    result = edge.cols;
 
-	for (int i = 0; i < sum.size(); i++){
-		if (sum[i] < result) {
-			result = sum[i];
-			flag = i;
-		};
-	}
+    for (int i = 0; i < sum.size(); i++){
+        if (sum[i] < result) {
+            result = sum[i];
+            flag = i;
+        };
+    }
 
-	cout << endl;
-	cout << "Waist        line[" << flag + up + 10 << "]" << endl;
-	return ( result );
+    cout << endl;
+    cout << "Waist        line[" << flag + up + 10 << "]" << endl;
+    return ( result );
 }

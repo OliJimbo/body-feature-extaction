@@ -2,11 +2,13 @@
  * Arthor: Yiming Sun
  * Date:   May 8th, 2017
  * Email:  guguant@yahoo.com
- * Description: The Project is about Computer graphics. 
- *		It can self-collect the key data through a front and side image.
- *		BodyEdgeDetection is only used in Eduction.
- * Copyright (c) 2017- Yiming Sun <guguant@yahoo.com>
- * All rights reserved
+ *
+ * Description: The Project is about Computer graphics.
+ * It can self-collect the key data through a front and side image.
+ * BodyEdgeDetection is only used in Eduction.
+ *
+ * Copyright (c) 2017- 2019 Sun Yiming <guguant@yahoo.com>
+ * All rights reserved.
  */
 
 #include "../main.h"
@@ -17,265 +19,251 @@ cv::Mat draw_position(cv::Mat edge, int line);
 int main()
 {
 
-	/* 
-	 * whileÑ­»·: ÊäÈëÔ­Í¼Æ¬£¬½øĞĞ²âÊÔ£¬¼ì²â²âÊÔĞ§¹û
-	 *		while (char(waitKey(1)) != 'q') { } // °´ 'q' ¼üÍË³öwhileÑ­»·
-	 * °´ 'q' ¼üÍË³öwhileÑ­»·; ¹Ø±Õ´°¿Ú, ¼´¿ÉÊäÈëÏÂÒ»ÕÅÍ¼Æ¬
-	 */
-	int outflag = 0;
-	while (1) {
-		outflag++;
-		cv::Mat srcImage;
-		string ImageName = "/0";
-		cout << "input image path:(ENTER 'q' to exit) " << endl;
+    /* 
+     * whileå¾ªç¯: è¾“å…¥åŸå›¾ç‰‡ï¼Œè¿›è¡Œæµ‹è¯•ï¼Œæ£€æµ‹æµ‹è¯•æ•ˆæœ
+     *        while (char(waitKey(1)) != 'q') { } // æŒ‰ 'q' é”®é€€å‡ºwhileå¾ªç¯
+     * æŒ‰ 'q' é”®é€€å‡ºwhileå¾ªç¯; å…³é—­çª—å£, å³å¯è¾“å…¥ä¸‹ä¸€å¼ å›¾ç‰‡
+     */
+    int outflag = 0;
+    while (1) {
+        outflag++;
+        cv::Mat srcImage;
+        string ImageName = "/0";
+        cout << "input image path:(ENTER 'q' to exit) " << endl;
 
-		cin >> ImageName;
-		// °´ 'q' »ò 'Q' ÍË³ö³ÌĞò
-		if (ImageName == "q" || ImageName == "Q") {
-			return 0;
-		}
+        cin >> ImageName;
+        // æŒ‰ 'q' æˆ– 'Q' é€€å‡ºç¨‹åº
+        if (ImageName == "q" || ImageName == "Q") {
+            return 0;
+        }
 
-		// ¶ÁÈ¡Í¼Æ¬ ImageName
-		srcImage = cv::imread(ImageName);
+        // è¯»å–å›¾ç‰‡ ImageName
+        srcImage = cv::imread(ImageName);
 
-		/* 
-		 * while(!srcImage.data){ }: »ñÈ¡ÕıÈ·µÄÍ¼Æ¬ÎÄ¼şÂ·¾¶
-		 */
- 		while (!srcImage.data) { 
-			cout << "error to read image." << endl;
-			cout << "input again: ";
-			cin >> ImageName;
-			if (ImageName == "q" || ImageName == "Q") {
-				return 0;
-			}
-			srcImage = cv::imread(ImageName);
-			cout << endl;
-		}
+        /* 
+         * while(!srcImage.data){ }: è·å–æ­£ç¡®çš„å›¾ç‰‡æ–‡ä»¶è·¯å¾„
+         */
+         while (!srcImage.data) { 
+            cout << "error to read image." << endl;
+            cout << "input again: ";
+            cin >> ImageName;
+            if (ImageName == "q" || ImageName == "Q") {
+                return 0;
+            }
+            srcImage = cv::imread(ImageName);
+            cout << endl;
+        }
 
-		/*
-		 * Dst : ±£´æºÚ°×¶şÖµÍ¼
-		 * get_BinaryImage(): ´¦ÀíÔ­Í¼Æ¬ÎªºÚ°×¶şÖµÍ¼ ; 
-		 */
-		cv::Mat Dst;
-		get_BinaryImage(srcImage, Dst);
+        /*
+         * Dst : ä¿å­˜é»‘ç™½äºŒå€¼å›¾
+         * get_BinaryImage(): å¤„ç†åŸå›¾ç‰‡ä¸ºé»‘ç™½äºŒå€¼å›¾;
+         */
+        cv::Mat Dst;
+        get_BinaryImage(srcImage, Dst);
 
-		/***********  Í¨¹ı²àÃæÍ¼¼ÆËãÈËÌåÏñËØÖµºÍÊµ¼Ê³¤¶ÈµÄ±ÈÀı  **********/
-		double height = 170.00 * 10; // ¼ÙÉèÊµ¼ÊÉí¸ßÎª 170.00 * 10 mm
-		double ratio = 0.0;			 // ratio ÏñËØÉí¸ß±ÈÀı
-		GetRatio(Dst, height, &ratio);
-		cout << "one pixel = " << ratio << " mm" << endl;
-		/*****************************************************************/
+        /***********  é€šè¿‡ä¾§é¢å›¾è®¡ç®—äººä½“åƒç´ å€¼å’Œå®é™…é•¿åº¦çš„æ¯”ä¾‹  **********/
+        double height = 170.00 * 10; // å‡è®¾å®é™…èº«é«˜ä¸º 170.00 * 10 mm
+        double ratio = 0.0;             // ratio åƒç´ èº«é«˜æ¯”ä¾‹
+        GetRatio(Dst, height, &ratio);
+        cout << "one pixel = " << ratio << " mm" << endl;
+        /*****************************************************************/
 
-	
-		cv::Mat DSTSHOW = Dst.clone();
+        cv::Mat DSTSHOW = Dst.clone();
 
+        // å£°æ˜: äººä½“åŒºæ®µç»“æ„ä½“
+        struct bodyp pp;
+        GetBodyPosition(Dst, &pp);
+        cout << endl;
+        cout << "|--------  FRONT ---------|" << endl;
+        cout << "head         : " << pp.head << endl;
+        cout << "foot         : " << pp.foot << endl;
+        cout << "legpoint     : " << pp.legpoint.x << " , " << pp.legpoint.y << endl;
+        cout << "left  armpit : " << pp.my_armpit.leftarmpit.x  << " , " << pp.my_armpit.leftarmpit.y << endl;
+        cout << "right armpit : " << pp.my_armpit.rightarmpit.x << " , " << pp.my_armpit.rightarmpit.y << endl;
+        cout << "left  hand   : " << pp.my_hand.my_left_hand.x  << " , " << pp.my_hand.my_left_hand.y << endl;
+        cout << "right hand   : " << pp.my_hand.my_right_hand.x << " , " << pp.my_hand.my_right_hand.y << endl;
 
-		// ÉùÃ÷: ÈËÌåÇø¶Î½á¹¹Ìå
-		struct bodyp pp;
-		GetBodyPosition(Dst, &pp);
-		cout << endl;
-		cout << "|--------  FRONT ---------|" << endl;
-		cout << "head         : " << pp.head << endl;
-		cout << "foot         : " << pp.foot << endl;
-		cout << "legpoint     : " << pp.legpoint.x << " , " << pp.legpoint.y << endl;
-		cout << "left  armpit : " << pp.my_armpit.leftarmpit.x  << " , " << pp.my_armpit.leftarmpit.y << endl;
-		cout << "right armpit : " << pp.my_armpit.rightarmpit.x << " , " << pp.my_armpit.rightarmpit.y << endl;
-		cout << "left  hand   : " << pp.my_hand.my_left_hand.x  << " , " << pp.my_hand.my_left_hand.y << endl;
-		cout << "right hand   : " << pp.my_hand.my_right_hand.x << " , " << pp.my_hand.my_right_hand.y << endl;
+        /***************** æ±‚è…°éƒ¨ ****************************************/
+        struct FindArea WaistArea;
+        WaistArea.UpperLimit = (pp.my_armpit.leftarmpit.y > pp.my_armpit.rightarmpit.y) ? (pp.my_armpit.rightarmpit.y) : (pp.my_armpit.leftarmpit.y);
+        WaistArea.LowerLimit.x = pp.legpoint.x;
+        WaistArea.LowerLimit.y = pp.legpoint.y;
 
+        int WaistWidth = 0; 
+        WaistWidth = FindWaist(Dst, WaistArea);
+        cout << "Waist Width  : " << WaistWidth <<  endl;
+        /*****************************************************************/
 
+        /*
+         * åˆ’åˆ†åŒºåŸŸ 
+         */
+        // head
+        draw_position(DSTSHOW, pp.head);
+        // left armpit
+        draw_position(DSTSHOW, pp.my_armpit.leftarmpit.y);
+        // left hand
+        draw_position(DSTSHOW, pp.my_hand.my_left_hand.y);
+        // åŒè…¿åˆ†å‰ç‚¹
+        draw_position(DSTSHOW, pp.legpoint.y);
+        // foot
+        draw_position(DSTSHOW, pp.foot);
 
-		/***************** ÇóÑü²¿ ****************************************/
-		struct FindArea WaistArea;
-		WaistArea.UpperLimit = (pp.my_armpit.leftarmpit.y > pp.my_armpit.rightarmpit.y) ? (pp.my_armpit.rightarmpit.y) : (pp.my_armpit.leftarmpit.y);
-		WaistArea.LowerLimit.x = pp.legpoint.x;
-		WaistArea.LowerLimit.y = pp.legpoint.y;
+        /**************  æ–œç‡ç‰¹å¾ç‚¹  *************************************/
+        vector <DstPoint> Left_Gradient_Collection;
+        Get_Left_PointGradient(Dst, Left_Gradient_Collection);
+        
+        int length_Left_Gradient_Collection = Left_Gradient_Collection.size();
 
-		int WaistWidth = 0; 
-		WaistWidth = FindWaist(Dst, WaistArea);
-		cout << "Waist Width  : " << WaistWidth <<  endl;
-		/*****************************************************************/
+        for (int i = 0; i < length_Left_Gradient_Collection; i++) {
+            show(DSTSHOW, Left_Gradient_Collection[i].x, Left_Gradient_Collection[i].y);
+        }
 
+        cout << endl;
+        cout << "Left gradient feature point num = " << length_Left_Gradient_Collection << endl;
 
-		/*
-		 * »®·ÖÇøÓò 
-		 */
-		// head
-		draw_position(DSTSHOW, pp.head);
-		// left armpit
-		draw_position(DSTSHOW, pp.my_armpit.leftarmpit.y);
-		// left hand
-		draw_position(DSTSHOW, pp.my_hand.my_left_hand.y);
-		// Ë«ÍÈ·Ö²æµã
-		draw_position(DSTSHOW, pp.legpoint.y);
-		// foot
-		draw_position(DSTSHOW, pp.foot);
+        Left_Gradient_Collection.clear();
 
+        vector <DstPoint> Right_Gradient_Collection;
+        Get_Right_PointGradient(Dst, Right_Gradient_Collection);
 
+        int length_Right_Gradient_Collection = Right_Gradient_Collection.size();
 
+        for (int i = 0; i < length_Right_Gradient_Collection; i++) {
+            show(DSTSHOW, Right_Gradient_Collection[i].x, Right_Gradient_Collection[i].y);
+        }
+        cout << "Right gradient feature point num = " << length_Right_Gradient_Collection << endl;
 
-		/**************  Ğ±ÂÊÌØÕ÷µã  *************************************/
-	
-		vector <DstPoint> Left_Gradient_Collection;
-		Get_Left_PointGradient(Dst, Left_Gradient_Collection);
-		
-		int length_Left_Gradient_Collection = Left_Gradient_Collection.size();
+        Right_Gradient_Collection.clear();
 
-		for (int i = 0; i < length_Left_Gradient_Collection; i++) {
-			show(DSTSHOW, Left_Gradient_Collection[i].x, Left_Gradient_Collection[i].y);
-		}
+        /******************************************************************/
 
-		cout << endl;
-		cout << "Left gradient feature point num = " << length_Left_Gradient_Collection << endl;
+        /****************  è®¡ç®—è‚©å®½  **************************************/
+        /*
+         * vector<int>sum: ä¿å­˜æ¯ä¸€è¡Œåƒç´ å€¼ = 255 çš„ç‚¹çš„æ€»æ•°
+         * pixSum():       è®¡ç®—æ¯ä¸€è¡Œåƒç´ ç‚¹ = 255 çš„ä¸ªæ•°, saved to 'sum'
+         *
+         */
+        vector<int>sum;
+        pixSum(Dst, sum);        // æ–¹æ³•1ï¼šéå†åƒç´ ; vector<int>sum ä¿å­˜æ¯ä¸€è¡Œç›®æ ‡åƒç´ ç‚¹çš„æ€»æ•°
+        //pixSum_side(Dst, sum); // æ–¹æ³•2: bodyä¸¤ç«¯å¼€å§‹é€¼è¿‘ï¼Œæ±‚å·¦å³ç«¯ç‚¹åæ ‡çš„å·®å€¼
 
-		Left_Gradient_Collection.clear();
+        /* 
+         * vector <int> pointgradient: ä¿å­˜æ¯ä¸€è¡Œåƒç´ æ•°æ®çš„æ¢¯åº¦
+         * getGradient():              è®¡ç®— sum æ•°æ®é›†çš„æ•°æ®æ¢¯åº¦
+         */
+        vector<double> pointgradient;
+        getGradient(sum, pointgradient);
 
+        /*
+         * ä¿å­˜äººä½“æ¢¯åº¦æ•°æ®åˆ°æ–‡ä»¶ sum.txtï¼Œä½¿ç”¨cv::Matlabç¨‹åºåˆ†ææ¢¯åº¦æ•°æ®
+         */
+        /*
+        ofstream ocout;
+        ocout.open("C:\\Users\\Administrator\\Desktop\\sum.txt");
+        for (int i = 0; i < (int)pointgradient.size(); i++) {
+            ocout << pointgradient[i] << endl;
+        }
+        ocout.close();
+        */
 
-		vector <DstPoint> Right_Gradient_Collection;
-		Get_Right_PointGradient(Dst, Right_Gradient_Collection);
+        /*
+         * è·å–è‚©è†€çš„ä½ç½®
+         * flag: å­˜å‚¨æ¢¯åº¦æœ€å¤§å€¼çš„è¡Œæ•°
+         */
+        int flag = 0; 
+        flag = MaxGradient(pointgradient);
 
-		int length_Right_Gradient_Collection = Right_Gradient_Collection.size();
+        // è¾“å‡ºè®¡ç®—ç»“æœ
+        cout << endl;
+        cout << "Shoulder     line[" << flag << "]" << endl;
+        cout << "Shoulder Width    : " <<  sum[flag] << " pixels." << endl;
+        //cout << "æ¢ç®—ä¸ºå˜ç±³  : " << sum[flag] * 0.0606577 << " cm" << endl;
 
-		for (int i = 0; i < length_Right_Gradient_Collection; i++) {
-			show(DSTSHOW, Right_Gradient_Collection[i].x, Right_Gradient_Collection[i].y);
-		}
-		cout << "Right gradient feature point num = " << length_Right_Gradient_Collection << endl;
+        // show the source image and the binary image.
+        cv::Mat temp1;
 
-		Right_Gradient_Collection.clear();
+        // è·å¾—ç¬¬iè¡Œçš„é¦–åœ°å€
+        uchar* data = DSTSHOW.ptr<uchar>(flag);
 
-		/******************************************************************/
+        // åˆ—å¾ªç¯, å°†è‚©è†€çš„ä½ç½®ç”¨ç‰¹æ®Šé¢œè‰²æ ‡æ³¨å‡ºæ¥
+        draw_position(DSTSHOW, flag);
 
+        /*
+         * ä»¥ä¸‹ä»£ç æ®µä½œç”¨: ç›´è§‚æ˜¾ç¤ºæ‰¾åˆ°çš„ç‰¹å¾ç‚¹
+         */
+        cv::destroyAllWindows();
 
+        imshow("DST", DSTSHOW);
+        /*
+        int pwidth  = GetSystemMetrics(SM_CXSCREEN); // æ˜¾ç¤ºå±å®½åº¦
+        int pheight = GetSystemMetrics(SM_CYSCREEN); // æ˜¾ç¤ºå±é«˜åº¦
 
-		/****************  ¼ÆËã¼ç¿í  **************************************/
-		/*
-		 * vector<int>sum: ±£´æÃ¿Ò»ĞĞÏñËØÖµ = 255 µÄµãµÄ×ÜÊı
-		 * pixSum():       ¼ÆËãÃ¿Ò»ĞĞÏñËØµã = 255 µÄ¸öÊı, saved to 'sum'
-		 *
-		 */
-		vector<int>sum;
-		pixSum(Dst, sum);        // ·½·¨1£º±éÀúÏñËØ; vector<int>sum ±£´æÃ¿Ò»ĞĞÄ¿±êÏñËØµãµÄ×ÜÊı
-		//pixSum_side(Dst, sum); // ·½·¨2: bodyÁ½¶Ë¿ªÊ¼±Æ½ü£¬Çó×óÓÒ¶Ëµã×ø±êµÄ²îÖµ
+        // the height of source image is lower than height of the Srceen
+        if (srcImage.rows < pheight) 
+        {
+            imshow(ImageName, DSTSHOW);
+        }
+        // height of the source image is higher than height of the Screen, ç¼©å°æ˜¾ç¤º source image
+        else { 
+            int zoom = (srcImage.rows / pheight) + 1;
+            resize(DSTSHOW, temp1, cv::Size(int(srcImage.cols / zoom), int(srcImage.rows / zoom)), (0, 0), (0, 0), 3);
+            imshow(ImageName, temp1);
+        }
+        */
 
-		/* 
-		 * vector <int> pointgradient: ±£´æÃ¿Ò»ĞĞÏñËØÊı¾İµÄÌİ¶È
-		 * getGradient():              ¼ÆËã sum Êı¾İ¼¯µÄÊı¾İÌİ¶È
-		 */
-		vector<double> pointgradient;
-		getGradient(sum, pointgradient);
+        /*
+         * clear data variable, release all resource
+         */
+        sum.clear();
+        pointgradient.clear();
+        cout << "--------------------------" << endl;
+        cout << endl;
+        /*********************************************************************/
 
-		/*
-		 * ±£´æÈËÌåÌİ¶ÈÊı¾İµ½ÎÄ¼ş sum.txt£¬Ê¹ÓÃcv::Matlab³ÌĞò·ÖÎöÌİ¶ÈÊı¾İ
-		 */
-		/*
-		ofstream ocout;
-		ocout.open("C:\\Users\\Administrator\\Desktop\\sum.txt");
-		for (int i = 0; i < (int)pointgradient.size(); i++) {
-			ocout << pointgradient[i] << endl;
-		}
-		ocout.close();
-		*/
+        /* save output result
+        //imwrite("../../DST.jpg", DSTSHOW);
+        char* outpath = (char*)malloc(100*sizeof(char));
+        memset(outpath, 0, 100);
 
-		/*
-		 * »ñÈ¡¼ç°òµÄÎ»ÖÃ
-		 * flag: ´æ´¢Ìİ¶È×î´óÖµµÄĞĞÊı
-		 */
-		int flag = 0; 
-		flag = MaxGradient(pointgradient);
+        sprintf(outpath, "out_%d.jpg", outflag);
+        cout << outpath << endl;
+        imwrite("outpath", DSTSHOW);
+        //cout << "output image is saved at " << outpath << endl;
 
-		// Êä³ö¼ÆËã½á¹û
-		cout << endl;
-		cout << "Shoulder     line[" << flag << "]" << endl;
-		cout << "Shoulder Width    : " <<  sum[flag] << " pixels." << endl;
-		//cout << "»»ËãÎªÀåÃ×  : " << sum[flag] * 0.0606577 << " cm" << endl;
-
-
-		// show the source image and the binary image.
-		cv::Mat temp1;
-
-		// »ñµÃµÚiĞĞµÄÊ×µØÖ·
-		uchar* data = DSTSHOW.ptr<uchar>(flag);   
-
-		// ÁĞÑ­»·, ½«¼ç°òµÄÎ»ÖÃÓÃÌØÊâÑÕÉ«±ê×¢³öÀ´
-		draw_position(DSTSHOW, flag);
-
-		/*
-		 * ÒÔÏÂ´úÂë¶Î×÷ÓÃ: Ö±¹ÛÏÔÊ¾ÕÒµ½µÄ ÌØÕ÷µã
-		 */
-		cv::destroyAllWindows();
-
-		imshow("DST", DSTSHOW);
-		/*
-		int pwidth  = GetSystemMetrics(SM_CXSCREEN); // ÏÔÊ¾ÆÁ¿í¶È
-		int pheight = GetSystemMetrics(SM_CYSCREEN); // ÏÔÊ¾ÆÁ¸ß¶È
-
-		// the height of source image is lower than height of the Srceen
-		if (srcImage.rows < pheight) 
-		{
-			imshow(ImageName, DSTSHOW);
-		}
-		// height of the source image is higher than height of the Screen, ËõĞ¡ÏÔÊ¾ source image
-		else { 
-			int zoom = (srcImage.rows / pheight) + 1;
-			resize(DSTSHOW, temp1, cv::Size(int(srcImage.cols / zoom), int(srcImage.rows / zoom)), (0, 0), (0, 0), 3);
-			imshow(ImageName, temp1);
-		}
-		*/
-
-		/*
-		 * clear data variable, release all resource
-		 */
-		sum.clear();
-		pointgradient.clear();
-		cout << "--------------------------" << endl;
-		cout << endl;
-		/*********************************************************************/
-
-		
-		/* save output result
-		//imwrite("../../DST.jpg", DSTSHOW);
-		char* outpath = (char*)malloc(100*sizeof(char));
-		memset(outpath, 0, 100);
-
-		sprintf(outpath, "out_%d.jpg", outflag);
-		cout << outpath << endl;
-		imwrite("outpath", DSTSHOW);
-		//cout << "output image is saved at " << outpath << endl;	
-
-		// freepath
-		free(outpath);
-		*/
-		cv::waitKey(0);
-	}
-	return 0;
+        // freepath
+        free(outpath);
+        */
+        cv::waitKey(0);
+    }
+    return 0;
 }
 
 cv::Mat show(cv::Mat edge, int x, int y) {
-	int i = 0, j = 0;
-	int move = 5;
+    int i = 0, j = 0;
+    int move = 5;
 
-	// »ñÈ¡ µÚyĞĞ µÄÊ×µØÖ·
-	uchar *data1 = edge.ptr<uchar>(y);
+    // è·å– ç¬¬yè¡Œ çš„é¦–åœ°å€
+    uchar *data1 = edge.ptr<uchar>(y);
 
-	// ¸Ä±ä×ø±ê { [x - move, x + move], y } ÏñËØÖµµÄ´óĞ¡
-	for (int i = x - move; i < x + move; i++) {
-		data1[i] = 180;
-	}
+    // æ”¹å˜åæ ‡ { [x - move, x + move], y } åƒç´ å€¼çš„å¤§å°
+    for (int i = x - move; i < x + move; i++) {
+        data1[i] = 180;
+    }
 
-	// ¸Ä±ä { x, [y - move, y + move ] } ÏñËØÖµµÄ´óĞ¡ 
-	for (int i = y - move; i < y + move; i++) {
+    // æ”¹å˜ { x, [y - move, y + move ] } åƒç´ å€¼çš„å¤§å° 
+    for (int i = y - move; i < y + move; i++) {
 
-		// »ñÈ¡ µÚiĞĞµÄ Ê×µØÖ·
-		uchar *data2 = edge.ptr<uchar>(i); // 
-		data2[x] = 180; // 
-	}
-	return (edge);
+        // è·å– ç¬¬iè¡Œçš„ é¦–åœ°å€
+        uchar *data2 = edge.ptr<uchar>(i); // 
+        data2[x] = 180; // 
+    }
+    return (edge);
 }
 
 cv::Mat draw_position(cv::Mat edge, int line) {
-	uchar* data_area = edge.ptr<uchar>(line);
-	for (int i = 0; i < edge.cols; i++) {
-		data_area[i] = 133;
-	}
-	return (edge);
+    uchar* data_area = edge.ptr<uchar>(line);
+    for (int i = 0; i < edge.cols; i++) {
+        data_area[i] = 133;
+    }
+    return (edge);
 }

@@ -1,57 +1,57 @@
 #include "front_height.h"
 
 /*
- * ÑĞ¾¿¶ÔÏó: ÈËÌåÕıÃæÍ¼
- * ·½·¨£ºÍ¨¹ıÈËÌåÕıÃæ
- *		ÖÁÉÏ¶øÏÂ±éÀúÏñËØµã£¬µÚÒ»¸ö 255 µÄµãÎª head
- *		ÖÁÏÂ¶øÉÏ±éÀúÏñËØµã£¬µÚÒ»¸ö 255 µÄµãÎª foot
+ * ç ”ç©¶å¯¹è±¡: äººä½“æ­£é¢å›¾
+ * æ–¹æ³•ï¼šé€šè¿‡äººä½“æ­£é¢
+ *       è‡³ä¸Šè€Œä¸‹éå†åƒç´ ç‚¹ï¼Œç¬¬ä¸€ä¸ª 255 çš„ç‚¹ä¸º head
+ *       è‡³ä¸‹è€Œä¸Šéå†åƒç´ ç‚¹ï¼Œç¬¬ä¸€ä¸ª 255 çš„ç‚¹ä¸º foot
  */
 
 void GetHeight(cv::Mat& edge, int * head, int * foot) {
-	cv::Mat outImage = edge.clone();
-	int rowNumber = outImage.rows;	//source image ĞĞÊı
-	int colNumber = outImage.cols;  //source image ÁĞÊı
-	int count = 0;					//count: ´æ´¢Ã¿Ò»ĞĞÏñËØÖµÎª255µÄÏñËØµÄ¸öÊı
+    cv::Mat outImage = edge.clone();
+    int rowNumber = outImage.rows;    //source image è¡Œæ•°
+    int colNumber = outImage.cols;  //source image åˆ—æ•°
+    int count = 0;                    //count: å­˜å‚¨æ¯ä¸€è¡Œåƒç´ å€¼ä¸º255çš„åƒç´ çš„ä¸ªæ•°
 
-	/*
-	* up  : ÈËÌåÕıÃæºÚ°×¶şÖµÍ¼ÉÏÏŞ, Í·¶¥×ø±ê
-	* down: ÈËÌåÕıÃæºÚ°×¶şÖµÍ¼ÏÂÏŞ, ½Åµ××ø±ê
-	*/
-	int up = 0, down = 0;
+    /*
+     * up  : äººä½“æ­£é¢é»‘ç™½äºŒå€¼å›¾ä¸Šé™, å¤´é¡¶åæ ‡
+     * down: äººä½“æ­£é¢é»‘ç™½äºŒå€¼å›¾ä¸‹é™, è„šåº•åæ ‡
+     */
+    int up = 0, down = 0;
 
-	uchar* data;
-	// Ñ°ÕÒÈËÌåÕıÃæºÚ°×¶şÖµÍ¼ÉÏÏŞ up Í·¶¥×ø±ê
-	for (int i = 0; i < rowNumber; i++) {       // ĞĞÑ­»·
-		data = outImage.ptr<uchar>(i);			// »ñµÃµÚiĞĞµÄÊ×µØÖ·
-		for (int j = 0; j < colNumber; j++) {   // ÁĞÑ­»·
-			if (data[j] == 255) {
-				up = i;
-				break;
-			}
-		}
-		if (up > 0){
-			break;
-		}
-	}
+    uchar* data;
+    // å¯»æ‰¾äººä½“æ­£é¢é»‘ç™½äºŒå€¼å›¾ä¸Šé™ up å¤´é¡¶åæ ‡
+    for (int i = 0; i < rowNumber; i++) {       // è¡Œå¾ªç¯
+        data = outImage.ptr<uchar>(i);          // è·å¾—ç¬¬iè¡Œçš„é¦–åœ°å€
+        for (int j = 0; j < colNumber; j++) {   // åˆ—å¾ªç¯
+            if (data[j] == 255) {
+                up = i;
+                break;
+            }
+        }
+        if (up > 0){
+            break;
+        }
+    }
 
-	// Ñ°ÕÒÈËÌåÕıÃæºÚ°×¶şÖµÍ¼ÏÂÏŞ down ½Åµ××ø±ê
-	for (int i = rowNumber - 1; i > 0; i--){
-		data = outImage.ptr<uchar>(i);
-		for (int j = 0; j < colNumber; j++) {
-			if (data[j] == 255) {
-				down = i;
-				break;
-			}
-		}
-		if (down > 0) {
-			break;
-		}
-	}
+    // å¯»æ‰¾äººä½“æ­£é¢é»‘ç™½äºŒå€¼å›¾ä¸‹é™ down è„šåº•åæ ‡
+    for (int i = rowNumber - 1; i > 0; i--){
+        data = outImage.ptr<uchar>(i);
+        for (int j = 0; j < colNumber; j++) {
+            if (data[j] == 255) {
+                down = i;
+                break;
+            }
+        }
+        if (down > 0) {
+            break;
+        }
+    }
 
-	/*
-	 * head£º Í·¶¥×ø±ê
-	 * foot:  ½Åµ××ø±ê
-	 */
-	*head = up;
-	*foot = down;
+    /*
+     * headï¼š å¤´é¡¶åæ ‡
+     * foot:  è„šåº•åæ ‡
+     */
+    *head = up;
+    *foot = down;
 }

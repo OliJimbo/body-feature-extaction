@@ -1,99 +1,98 @@
 #include "middlepoint.h"
 
 using namespace std;
-//livepoint: ½á¹¹Ìå, ËÑË÷µãµÄ×ø±ê
+//livepoint: ç»“æ„ä½“, æœç´¢ç‚¹çš„åæ ‡
 struct livepoint leftpoint, rightpoint, middlepoint;
 
 /*
- * void findthepoint(){} Ñ°ÕÒÁ½ÍÈ·Ö²æµãµÄ×ø±ê
- * point_x: ĞĞ  point_y:ÁĞ
+ * void findthepoint(){} å¯»æ‰¾ä¸¤è…¿åˆ†å‰ç‚¹çš„åæ ‡
+ * point_x: è¡Œ  point_y:åˆ—
  *
  */
 void findthepoint(cv::Mat& edge, struct livepoint * dstpoint);
 
 void findthepoint(cv::Mat& edge, struct livepoint * dstpoint) {
-	cv::Mat outImage = edge.clone();
-	int rowNumber = outImage.rows;	//Ô­Í¼Æ¬ĞĞÊı
-	int colNumber = outImage.cols;  //Ô­Í¼Æ¬ÁĞÊı
-	//cout << "hang:" << rowNumber << " " << colNumber << endl;
-	// ³õÊ¼»¯ leftpoint, rightpoint, middlepoint µãµÄ×ø±ê
-	leftpoint.x = 0;
-	leftpoint.y = 0;
+    cv::Mat outImage = edge.clone();
+    int rowNumber = outImage.rows;    //åŸå›¾ç‰‡è¡Œæ•°
+    int colNumber = outImage.cols;    //åŸå›¾ç‰‡åˆ—æ•°
+    //cout << "hang:" << rowNumber << " " << colNumber << endl;
+    // åˆå§‹åŒ– leftpoint, rightpoint, middlepoint ç‚¹çš„åæ ‡
+    leftpoint.x = 0;
+    leftpoint.y = 0;
 
-	rightpoint.x = 0;
-	rightpoint.y = 0;
+    rightpoint.x = 0;
+    rightpoint.y = 0;
 
-	middlepoint.x = (int) (colNumber / 2); // x ÎªÍ¼Æ¬ºá×ø±ê
-	middlepoint.y = rowNumber - 1;		   // y ÎªÍ¼Æ¬×İ×ø±ê
+    middlepoint.x = (int) (colNumber / 2); // x ä¸ºå›¾ç‰‡æ¨ªåæ ‡
+    middlepoint.y = rowNumber - 1;         // y ä¸ºå›¾ç‰‡çºµåæ ‡
 
-	//cout << middlepoint.x << " " << middlepoint.y << endl;
+    //cout << middlepoint.x << " " << middlepoint.y << endl;
 
+    // ä» (middlepoint.x, middlepoint.y) å¼€å§‹ç«–ç›´å‘ä¸Šæœç´¢ï¼Œç›´åˆ°æœç´¢åˆ°åŒè…¿çš„åˆ†å‰ç‚¹
+    for (int i = rowNumber - 1;i > 0;i--) {
+        // è·å– ç¬¬iè¡Œ çš„é¦–åœ°å€
+        uchar* data = outImage.ptr<uchar>(i);
+        
+        // data[middlepoint.x] = 255 æ—¶ï¼Œå‘å·¦å³æ–¹å‘æœç´¢
+        if (data[middlepoint.x] == 255) {
+            middlepoint.y = i;
 
-	// ´Ó (middlepoint.x, middlepoint.y) ¿ªÊ¼ÊúÖ±ÏòÉÏËÑË÷£¬Ö±µ½ËÑË÷µ½Ë«ÍÈµÄ·Ö²æµã
-	for (int i = rowNumber - 1;i > 0;i--) {
-		// »ñÈ¡ µÚiĞĞ µÄÊ×µØÖ·
-		uchar* data = outImage.ptr<uchar>(i);
-		
-		// data[middlepoint.x] = 255 Ê±£¬Ïò×óÓÒ·½ÏòËÑË÷
-		if (data[middlepoint.x] == 255) {
-			middlepoint.y = i;
+            // å‘å·¦è¾¹10ä¸ªç‚¹æœç´¢
+            int count = 0;
+            for (int j = 1;j <= 10;j++) {
+                if (data[middlepoint.x - j] == 255) {
+                    count++;
+                }
+            }
+            if (count > 5) {
+                // middlepoint = left leg çš„è¾¹ç•Œ
+                leftpoint.x = middlepoint.x;
+                leftpoint.y = middlepoint.y;
 
-			// Ïò×ó±ß10¸öµãËÑË÷
-			int count = 0;
-			for (int j = 1;j <= 10;j++) {
-				if (data[middlepoint.x - j] == 255) {
-					count++;
-				}
-			}
-			if (count > 5) {
-				// middlepoint = left leg µÄ±ß½ç
-				leftpoint.x = middlepoint.x;
-				leftpoint.y = middlepoint.y;
+                for (int j = 1;j < colNumber;j++) {
+                    if (data[middlepoint.x + j] == 255) {
+                        // å³è¾¹çš„ç‚¹
+                        rightpoint.x = middlepoint.x + j;
+                        rightpoint.y = middlepoint.y;
+                        break;
+                    }
+                }
+            }
+            else {
+                // middlepoint ä¸ºright leg çš„è¾¹ç•Œ
+                rightpoint.x = middlepoint.x;
+                rightpoint.y = middlepoint.y;
 
-				for (int j = 1;j < colNumber;j++) {
-					if (data[middlepoint.x + j] == 255) {
-						// ÓÒ±ßµÄµã
-						rightpoint.x = middlepoint.x + j;
-						rightpoint.y = middlepoint.y;
-						break;
-					}
-				}
-			}
-			else {
-				// middlepoint Îªright leg µÄ±ß½ç
-				rightpoint.x = middlepoint.x;
-				rightpoint.y = middlepoint.y;
+                for (int j = 1;j > 0;j++) {
+                    if (data[middlepoint.x - j] == 255) {
+                        leftpoint.x = middlepoint.x - j;
+                        leftpoint.y = middlepoint.y;
+                        break;
+                    }
+                }
+            }
+            // middlepoint
+            middlepoint.x = (int)((leftpoint.x + rightpoint.x) / 2);
+        }
 
-				for (int j = 1;j > 0;j++) {
-					if (data[middlepoint.x - j] == 255) {
-						leftpoint.x = middlepoint.x - j;
-						leftpoint.y = middlepoint.y;
-						break;
-					}
-				}
-			}
-			// middlepoint
-			middlepoint.x = (int)((leftpoint.x + rightpoint.x) / 2);
-		}
+        else {
+            ;
+        }
+        
+        // æ‰¾åˆ°åŒè…¿åˆ†å‰ç‚¹çš„åæ ‡
+        if (middlepoint.x == leftpoint.x || middlepoint.x == rightpoint.x) {
+            break;
+        }
+        else {
+            ;
+        }
+    }
+    
+    // å¾—åˆ° (point_x,point_y)
+    dstpoint -> x = middlepoint.x;    // åŒè…¿åˆ†å‰ç‚¹çš„è¡Œåæ ‡
+    dstpoint -> y = middlepoint.y;    // åŒè…¿åˆ†å‰ç‚¹çš„åˆ—åæ ‡ 
 
-		else {
-			;
-		}
-		
-		// ÕÒµ½Ë«ÍÈ·Ö²æµãµÄ×ø±ê
-		if (middlepoint.x == leftpoint.x || middlepoint.x == rightpoint.x) {
-			break;
-		}
-		else {
-			;
-		}
-	}
-	
-	// µÃµ½ (point_x,point_y)
-	dstpoint -> x = middlepoint.x;    // Ë«ÍÈ·Ö²æµãµÄĞĞ×ø±ê
-	dstpoint -> y = middlepoint.y;    // Ë«ÍÈ·Ö²æµãµÄÁĞ×ø±ê 
-
-	//²âÊÔÊä³ö½á¹û
-	//cout << "middlepoint.x: " << middlepoint.x << endl;
-	//cout << "middlepoint.y: " << middlepoint.y << endl;
+    //æµ‹è¯•è¾“å‡ºç»“æœ
+    //cout << "middlepoint.x: " << middlepoint.x << endl;
+    //cout << "middlepoint.y: " << middlepoint.y << endl;
 }

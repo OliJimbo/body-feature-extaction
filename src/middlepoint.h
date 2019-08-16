@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __MIDDLE_POINT_H__
+#define __MIDDLE_POINT_H__
+
 #include "/usr/local/include/opencv2/opencv.hpp"
 #include "/usr/local/include/opencv2/highgui/highgui.hpp"
 #include "/usr/local/include/opencv2/imgproc/imgproc.hpp"
@@ -6,18 +8,19 @@
 #include <iostream>
 #include <vector>
 
-
 typedef struct livepoint {
-	int x;
-	int y;
+    int x;
+    int y;
 } livepoint;
 
 /*
- * void findthepoint(): Ñ°ÕÒË«ÍÈ·Ö²æµãµÄ×ø±ê (point_x, point_y)
- * ·½·¨ÃèÊö£º
- *	 step1: ´ÓÍ¼Æ¬µÄÖĞÖá¿ªÊ¼ÏòÉÏ±éÀú
- *	 step2: µ±Óöµ½ left leg or right leg µÄ±ß½çÊ±£¬ÅĞ¶ÏmiddlepointÊÇ left leg »¹ÊÇ right leg£¬Çó³öleft leg and right legµÄ×ø±ê
- *	 step3: middlepoint = (leftpoint + rightpoint) / 2 ;ÖØ¸´ step1, Ö±µ½ middlepoint = leftpoint or middlepoint = rightpoint
+ * void findthepoint(): å¯»æ‰¾åŒè…¿åˆ†å‰ç‚¹çš„åæ ‡ (point_x, point_y)
+ * æ–¹æ³•æè¿°ï¼š
+ *     step1: ä»å›¾ç‰‡çš„ä¸­è½´å¼€å§‹å‘ä¸Šéå†
+ *     step2: å½“é‡åˆ° left leg or right leg çš„è¾¹ç•Œæ—¶ï¼Œåˆ¤æ–­middlepointæ˜¯ left leg è¿˜æ˜¯ right legï¼Œæ±‚å‡ºleft leg and right legçš„åæ ‡
+ *     step3: middlepoint = (leftpoint + rightpoint) / 2 ;é‡å¤ step1, ç›´åˆ° middlepoint = leftpoint or middlepoint = rightpoint
  */
 //void findthepoint(cv::Mat& edge, int *point_x, int *point_y);
 void findthepoint(cv::Mat& edge, struct livepoint *dstpoint);
+
+#endif // __MIDDLE_POINT_H__

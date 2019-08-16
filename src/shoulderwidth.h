@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __SHOULD_WIDTH_H__
+#define __SHOULD_WIDTH_H__
+
 #include "/usr/local/include/opencv2/opencv.hpp"
 #include "/usr/local/include/opencv2/highgui/highgui.hpp"
 #include "/usr/local/include/opencv2/imgproc/imgproc.hpp"
@@ -8,7 +10,9 @@
 
 using namespace std;
 
-void pixSum(cv::Mat& edge, vector<int>& sum);							// ¼ÆËãºÚ°×¶şÖµÍ¼Ã¿Ò»ĞĞÏñËØµãµÄ¸öÊı
-void pixSum_side(cv::Mat& edge, vector<int> &sum);						// ²ÉÓÃ×óÓÒÏñËØ×ø±êÏà¼õµÄ·½·¨Çó ÏñËØÖµ = 255 µÄÏñËØµãµÄ¸öÊı
-void getGradient(vector<int>& sumpx, vector<double> &pointgradient);// ¼ÆËãÏñËØÊı×é `sum` µÄÌİ¶È£¬½á¹û±£´æÔÚvector `pointgradient`
-int  MaxGradient(vector<double>arr);								// Ñ°ÕÒÌİ¶ÈÊı×é `pointgradient`ÖĞµÄ×î´óÖµ
+void pixSum(cv::Mat& edge, vector<int>& sum);                        // è®¡ç®—é»‘ç™½äºŒå€¼å›¾æ¯ä¸€è¡Œåƒç´ ç‚¹çš„ä¸ªæ•°
+void pixSum_side(cv::Mat& edge, vector<int> &sum);                   // é‡‡ç”¨å·¦å³åƒç´ åæ ‡ç›¸å‡çš„æ–¹æ³•æ±‚ åƒç´ å€¼ = 255 çš„åƒç´ ç‚¹çš„ä¸ªæ•°
+void getGradient(vector<int>& sumpx, vector<double> &pointgradient); // è®¡ç®—åƒç´ æ•°ç»„ `sum` çš„æ¢¯åº¦ï¼Œç»“æœä¿å­˜åœ¨vector `pointgradient`
+int  MaxGradient(vector<double>arr);                                 // å¯»æ‰¾æ¢¯åº¦æ•°ç»„ `pointgradient`ä¸­çš„æœ€å¤§å€¼
+
+#endif // __SHOULD_WIDTH_H__

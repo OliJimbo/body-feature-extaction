@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __BODY_POSITION_H__
+#define __BODY_POSITION_H__
+
 #include "/usr/local/include/opencv2/opencv.hpp"
 #include "/usr/local/include/opencv2/highgui/highgui.hpp"
 #include "/usr/local/include/opencv2/imgproc/imgproc.hpp"
@@ -11,23 +13,25 @@
 #include "armpoint.h"
 
 /*
- * bodyp: ´æ´¢body²»Í¬Çø¶ÎµÄ×ø±ê
+ * bodyp: å­˜å‚¨bodyä¸åŒåŒºæ®µçš„åæ ‡
  * 
- * ÒÔÈËÌå×ó°ë±ßÉíÌåÎª±ê¶¨£¬Èç£¬×ó¸ì²²£¬×óÊÖ£¬×ó½Å
- * (×¢: ÒÑÓÒ°ë±ßÉíÌåÎªÑĞ¾¿¶ÔÏó£¬Í¬Ñù¿ÉĞĞ)
+ * ä»¥äººä½“å·¦åŠè¾¹èº«ä½“ä¸ºæ ‡å®šï¼Œå¦‚ï¼Œå·¦èƒ³è†Šï¼Œå·¦æ‰‹ï¼Œå·¦è„š
+ * (æ³¨: å·²å³åŠè¾¹èº«ä½“ä¸ºç ”ç©¶å¯¹è±¡ï¼ŒåŒæ ·å¯è¡Œ)
  */
 typedef struct bodyp{
-	int head;						// Í·¶¥
-	int neck;						// ²±×Ó
-	struct armpit    my_armpit;		// ¸ìÖ«ÎÑ
-	struct hand      my_hand;		// ×óÊÖ×ø±ê ºÍ ÓÒÊÖ×ø±ê
-	struct livepoint legpoint;		// Ë«ÍÈ·Ö²æµãµÄ×ø±ê
-	int foot;						// ½Åµ× 
+    int head;                    // å¤´é¡¶
+    int neck;                    // è„–å­
+    struct armpit    my_armpit;  // èƒ³è‚¢çª
+    struct hand      my_hand;    // å·¦æ‰‹åæ ‡ å’Œ å³æ‰‹åæ ‡
+    struct livepoint legpoint;   // åŒè…¿åˆ†å‰ç‚¹çš„åæ ‡
+    int foot;                    // è„šåº• 
 } bodyp;
 
 /*
  * struct find_armpit_start_line;
- * ½á¹¹Ìå£¬ËÑË÷ armpit µÄÆğÊ¼ĞĞ
+ * ç»“æ„ä½“ï¼Œæœç´¢ armpit çš„èµ·å§‹è¡Œ
  */
 
 void GetBodyPosition(cv::Mat& edge, struct bodyp * body);
+
+#endif // __BODY_POSITION_H__
