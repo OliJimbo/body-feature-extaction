@@ -1,73 +1,71 @@
 #include "hand.h"
 
 /*
- * ÑĞ¾¿¶ÔÏó: ÈËÌåÕıÃæÍ¼
- * º¯Êı: void GetHand(cv::Mat& edge, struct hand * my_hand);
- * ·½·¨£ºÍ¨¹ıÈËÌåÕıÃæÍ¼
- *		(´Ó×óµ½ÓÒ) ÖÁÉÏ¶øÏÂ£¬µÚÒ»¸öÏñËØµãÎª 255 µÄÏñËØµã ¼´Îª ×óÊÖ ×ø±ê
- *		(´ÓÓÒµ½×ó) ÖÁÉÏ¶øÏÂ£¬µÚÒ»¸öÏñËØµãÎª 255 µÄÏñËØµã ¼´Îª ÓÒÊÖ ×ø±ê
+ * ç ”ç©¶å¯¹è±¡: äººä½“æ­£é¢å›¾
+ * å‡½æ•°: void GetHand(cv::Mat& edge, struct hand * my_hand);
+ * æ–¹æ³•ï¼šé€šè¿‡äººä½“æ­£é¢å›¾
+ *        (ä»å·¦åˆ°å³) è‡³ä¸Šè€Œä¸‹ï¼Œç¬¬ä¸€ä¸ªåƒç´ ç‚¹ä¸º 255 çš„åƒç´ ç‚¹ å³ä¸º å·¦æ‰‹ åæ ‡
+ *        (ä»å³åˆ°å·¦) è‡³ä¸Šè€Œä¸‹ï¼Œç¬¬ä¸€ä¸ªåƒç´ ç‚¹ä¸º 255 çš„åƒç´ ç‚¹ å³ä¸º å³æ‰‹ åæ ‡
  */
 
 void GetHand(cv::Mat& edge, struct hand * my_hand) {
-	cv::Mat outImage = edge.clone();
-	int rowNumber = outImage.rows;	//source image ĞĞÊı
-	int colNumber = outImage.cols;  //source image ÁĞÊı
+    cv::Mat outImage = edge.clone();
+    int rowNumber = outImage.rows;  //source image è¡Œæ•°
+    int colNumber = outImage.cols;  //source image åˆ—æ•°
 
-	struct left_hand left_hand = {0, 0};
-	uchar* data_left;
+    struct left_hand left_hand = {0, 0};
+    uchar* data_left;
 
-	/*
-	 * ĞĞÑ­»·Çø¼ä: [ 100, rowNumber - 150]
-	 * Ô¤Éè ÊÖµÄ×ø±ê ÔÚ[100, rowNumber - 150] Ö®¼ä
-	 *
-	 */
-	int row_start = 0; 
-	int row_end = 0;
-	row_start = 100;
-	row_end = rowNumber - 200;
+    /*
+     * è¡Œå¾ªç¯åŒºé—´: [ 100, rowNumber - 150]
+     * é¢„è®¾ æ‰‹çš„åæ ‡ åœ¨[100, rowNumber - 150] ä¹‹é—´
+     *
+     */
+    int row_start = 0; 
+    int row_end = 0;
+    row_start = 100;
+    row_end = rowNumber - 200;
 
-	// Ñ°ÕÒÈËÌåÕıÃæºÚ°×¶şÖµÍ¼ ×óÊÖ×ø±ê
-	for (int i = 0; i < colNumber ; i++) {      // ÁĞÑ­»·
-		for (int j = row_start; j < row_end; j++) {   // ĞĞÑ­»·
-			data_left = outImage.ptr<uchar>(j);		// »ñµÃµÚjĞĞµÄÊ×µØÖ·
-			if (data_left[i] == 255) {
-				left_hand.x = i;
-				left_hand.y = j;
-				break;
-			}
-		}
-		if (left_hand.x > 0) {
-			break;
-		}
-	}
+    // å¯»æ‰¾äººä½“æ­£é¢é»‘ç™½äºŒå€¼å›¾ å·¦æ‰‹åæ ‡
+    for (int i = 0; i < colNumber ; i++) {           // åˆ—å¾ªç¯
+        for (int j = row_start; j < row_end; j++) {  // è¡Œå¾ªç¯
+            data_left = outImage.ptr<uchar>(j);      // è·å¾—ç¬¬jè¡Œçš„é¦–åœ°å€
+            if (data_left[i] == 255) {
+                left_hand.x = i;
+                left_hand.y = j;
+                break;
+            }
+        }
+        if (left_hand.x > 0) {
+            break;
+        }
+    }
 
-	/******
+    /******
 
-	BUG 2017Äê3ÔÂ21ÈÕ22:41:26
-	
-	****/
-	struct right_hand right_hand = { 0, 0 };
-	// Ñ°ÕÒÈËÌåÕıÃæºÚ°×¶şÖµÍ¼ ×óÊÖ×ø±ê
-	uchar* data_right;
-	for (int i = colNumber - 1; i > 0; i--) {   // ÁĞÑ­»·
-		for (int j = row_start; j < row_end; j++) {   // ĞĞÑ­»·
-			data_right = outImage.ptr<uchar>(j);		// »ñµÃµÚ j ĞĞµÄÊ×µØÖ·
-			if (data_right[i] == 255) {
-				right_hand.x = i;
-				right_hand.y = j;
-				break;
-			}
-		}
-		if (right_hand.x > 0) {
-			break;
-		}
-	}
+    BUG 2017å¹´3æœˆ21æ—¥22:41:26
+    
+    ****/
+    struct right_hand right_hand = { 0, 0 };
+    // å¯»æ‰¾äººä½“æ­£é¢é»‘ç™½äºŒå€¼å›¾ å·¦æ‰‹åæ ‡
+    uchar* data_right;
+    for (int i = colNumber - 1; i > 0; i--) {        // åˆ—å¾ªç¯
+        for (int j = row_start; j < row_end; j++) {  // è¡Œå¾ªç¯
+            data_right = outImage.ptr<uchar>(j);     // è·å¾—ç¬¬ j è¡Œçš„é¦–åœ°å€
+            if (data_right[i] == 255) {
+                right_hand.x = i;
+                right_hand.y = j;
+                break;
+            }
+        }
+        if (right_hand.x > 0) {
+            break;
+        }
+    }
 
-	/*
-	 * »ñÈ¡ ×óÊÖ×ø±ê ºÍ ÓÒÊÖ×ø±ê
-	 */
-	my_hand->my_left_hand  = left_hand;
-	my_hand->my_right_hand = right_hand;
-
-
+    /*
+     * è·å– å·¦æ‰‹åæ ‡ å’Œ å³æ‰‹åæ ‡
+     */
+    my_hand->my_left_hand  = left_hand;
+    my_hand->my_right_hand = right_hand;
 }

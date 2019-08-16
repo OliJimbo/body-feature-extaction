@@ -3,79 +3,68 @@
 #include "middlepoint.h"
 #include "armpoint.h"
 
-
 /*
- * bodypostion.h		½«ÈËÌå½á¹¹·ÖÇø [ head¡¢neck¡¢armpit¡¢hand¡¢legpoint¡¢foot ]
- * front_height.h		ÇóÈËÌåÕýÃæÍ¼ Í·¶¥×ø±ê ºÍ ½Åµ××ø±ê
- * middlepoint.h		ÇóË«ÍÈ·Ö²æµãµÄ×ø±ê
- * armpoint.h			Çó¸ì²²·Ö²æµãµÄ×ø±ê
- * 
- * 
- *
+ * bodypostion.h        å°†äººä½“ç»“æž„åˆ†åŒº [ headã€neckã€armpitã€handã€legpointã€foot ]
+ * front_height.h        æ±‚äººä½“æ­£é¢å›¾ å¤´é¡¶åæ ‡ å’Œ è„šåº•åæ ‡
+ * middlepoint.h        æ±‚åŒè…¿åˆ†å‰ç‚¹çš„åæ ‡
+ * armpoint.h            æ±‚èƒ³è†Šåˆ†å‰ç‚¹çš„åæ ‡
  */
 
 void GetBodyPosition(cv::Mat& edge, struct bodyp * body) {
-	cv::Mat Dst = edge.clone();
-	int rowNumber = Dst.rows;//source image ÐÐÊý
-	int colNumber = Dst.cols;  //source image ÁÐÊý
+    cv::Mat Dst = edge.clone();
+    int rowNumber = Dst.rows; //source image è¡Œæ•°
+    int colNumber = Dst.cols; //source image åˆ—æ•°
 
+    /*
+     *  void GetHeight(): èŽ·å–å¤´é¡¶å’Œè„šåº•çš„åæ ‡ -> front_height.h
+     *  head_tmp: å¤´é¡¶åæ ‡
+     *  foot_tmp: è„šåº•åæ ‡
+     */
+    int head_tmp = 0, foot_tmp = 0;
+    GetHeight(Dst, &head_tmp, &foot_tmp);
+    body->head = head_tmp;
+    body->foot = foot_tmp;
 
-	/*
-	 *	void GetHeight(): »ñÈ¡Í·¶¥ºÍ½Åµ×µÄ×ø±ê -> front_height.h
-	 *  head_tmp: Í·¶¥×ø±ê
-	 *	foot_tmp: ½Åµ××ø±ê
-	 *
-	 */
-	int head_tmp = 0, foot_tmp = 0;
-	GetHeight(Dst, &head_tmp, &foot_tmp);
-	body->head = head_tmp;
-	body->foot = foot_tmp;
+    /*
+     * void GetHand(); èŽ·å–æ‰‹çš„åæ ‡
+     * hand_tmp: ç»“æž„ä½“ å­˜å‚¨æ‰‹çš„åæ ‡ ( å·¦æ‰‹åæ ‡ + å³æ‰‹åæ ‡)
+     */
+    struct hand hand_tmp;
+    GetHand(Dst, &hand_tmp);
+    body->my_hand = hand_tmp;
 
+    /*
+     * void findthepoint(); èŽ·å–åŒè…¿åˆ†å‰ç‚¹çš„åæ ‡ -> middlepoint.h
+     * legpoint_position: ç»“æž„ä½“ å­˜å‚¨åŒè…¿åˆ†å‰ç‚¹çš„åæ ‡
+     */
+    struct livepoint legpoint_position;
+    findthepoint(Dst, &legpoint_position);
+    body->legpoint = legpoint_position;
 
-	/*
-	 * void GetHand(); »ñÈ¡ÊÖµÄ×ø±ê
-	 * hand_tmp: ½á¹¹Ìå ´æ´¢ÊÖµÄ×ø±ê ( ×óÊÖ×ø±ê + ÓÒÊÖ×ø±ê)
-	 */
-	struct hand hand_tmp;
-	GetHand(Dst, &hand_tmp);
-	body->my_hand = hand_tmp;
+    /*
+     * void GetArmpit(cv::Mat& edge, struct hand * my_hand_y_line, struct armpit * my_armpit); -> armpoint.h
+     * èŽ·å– armpit çš„åæ ‡
+     * struct armpit armpit_position:            ç»“æž„ä½“ å­˜å‚¨ armpit çš„åæ ‡
+     * struct find_armpit_start_line start_line: ç»“æž„ä½“ å­˜å‚¨ armpit èµ·å§‹æœç´¢è¡Œ
+     */
+    struct armpit armpit_position;
+    struct find_armpit_start_line start_line = {0, 0};
+    // å·¦æ‰‹
+    if ( body->my_hand.my_left_hand.y > body->legpoint.y ) {
+        start_line.left_start_line = body->my_hand.my_left_hand.y;
+    }
+    else {
+        start_line.left_start_line = body->my_hand.my_left_hand.y;
+    }
+    // å³æ‰‹
+    if ( body->my_hand.my_right_hand.y > body->legpoint.y ) {
+        start_line.right_start_line = body->my_hand.my_right_hand.y;
+    }
+    else {
+        start_line.right_start_line = body->my_hand.my_right_hand.y;
+    }
 
-
-	/*
-	 * void findthepoint(); »ñÈ¡Ë«ÍÈ·Ö²æµãµÄ×ø±ê -> middlepoint.h
-	 * legpoint_position: ½á¹¹Ìå ´æ´¢Ë«ÍÈ·Ö²æµãµÄ×ø±ê
-	 *
-	 */
-	struct livepoint legpoint_position;
-	findthepoint(Dst, &legpoint_position);
-	body->legpoint = legpoint_position;
-
-
-
-	/*
-	 * void GetArmpit(cv::Mat& edge, struct hand * my_hand_y_line, struct armpit * my_armpit); ->  armpoint.h
-	 * »ñÈ¡ armpit µÄ×ø±ê
-	 * struct armpit armpit_position:            ½á¹¹Ìå ´æ´¢ armpit µÄ×ø±ê
-	 * struct find_armpit_start_line start_line: ½á¹¹Ìå ´æ´¢ armpit ÆðÊ¼ËÑË÷ÐÐ
-	 */
-	struct armpit armpit_position;
-	struct find_armpit_start_line start_line = {0, 0};
-	// ×óÊÖ
-	if ( body->my_hand.my_left_hand.y > body->legpoint.y ) {
-		start_line.left_start_line = body->my_hand.my_left_hand.y;
-	}
-	else {
-		start_line.left_start_line = body->my_hand.my_left_hand.y;
-	}
-	// ÓÒÊÖ
-	if ( body->my_hand.my_right_hand.y > body->legpoint.y ) {
-		start_line.right_start_line = body->my_hand.my_right_hand.y;
-	}
-	else {
-		start_line.right_start_line = body->my_hand.my_right_hand.y;
-	}
-
-	GetArmpit(Dst, &start_line, &armpit_position);
-	body->my_armpit = armpit_position;
-	/******************************************************************/
+    GetArmpit(Dst, &start_line, &armpit_position);
+    body->my_armpit = armpit_position;
+    /******************************************************************/
 }

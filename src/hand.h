@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __HAND_H__
+#define __HAND_H__
+
 #include "/usr/local/include/opencv2/opencv.hpp"
 #include "/usr/local/include/opencv2/highgui/highgui.hpp"
 #include "/usr/local/include/opencv2/imgproc/imgproc.hpp"
@@ -9,30 +11,32 @@
 using namespace std;
 
 /*
- * ÔËËã¶ÔÏó: ÈËÌåÕıÃæÍ¼
- * º¯Êı×÷ÓÃ£º¼ÆËãÈËÌåÕıÃæÍ¼ ×óÊÖ×ø±ê ºÍ ÓÒÊÖ×ø±ê
- * ·½·¨£º
- *	¼ÆËãÕıÃæÍ¼
- *	(ºá×ø±ê´Ó 0 ¿ªÊ¼)   ÖÁÉÏ¶øÏÂ±éÀúÏñËØµã£¬= 255 µÚÒ»¸öÏñËØµãµÄ×ø±ê¼´Îª ×óÊÖ ×ø±ê
- *  (ºá×ø±ê´Ó ×î´ó¿ªÊ¼) ÖÁÉÏ¶øÏÂ±éÀúÏñËØµã£¬= 255 µÚÒ»¸öÏñËØµãµÄ×ø±ê¼´Îª ÓÒÊÖ ×ø±ê
+ * è¿ç®—å¯¹è±¡: äººä½“æ­£é¢å›¾
+ * å‡½æ•°ä½œç”¨ï¼šè®¡ç®—äººä½“æ­£é¢å›¾ å·¦æ‰‹åæ ‡ å’Œ å³æ‰‹åæ ‡
+ * æ–¹æ³•ï¼š
+ *    è®¡ç®—æ­£é¢å›¾
+ *    (æ¨ªåæ ‡ä» 0 å¼€å§‹)   è‡³ä¸Šè€Œä¸‹éå†åƒç´ ç‚¹ï¼Œ= 255 ç¬¬ä¸€ä¸ªåƒç´ ç‚¹çš„åæ ‡å³ä¸º å·¦æ‰‹ åæ ‡
+ *    (æ¨ªåæ ‡ä» æœ€å¤§å¼€å§‹) è‡³ä¸Šè€Œä¸‹éå†åƒç´ ç‚¹ï¼Œ= 255 ç¬¬ä¸€ä¸ªåƒç´ ç‚¹çš„åæ ‡å³ä¸º å³æ‰‹ åæ ‡
  */
 
-
-// left_hand: ½á¹¹Ìå ×óÊÖ×ø±ê
+// left_hand: ç»“æ„ä½“ å·¦æ‰‹åæ ‡
 typedef struct left_hand{
-	int x;
-	int y;
+    int x;
+    int y;
 } left_hand;
 
-// right_hand: ½á¹¹Ìå ÓÒÊÖ×ø±ê
+// right_hand: ç»“æ„ä½“ å³æ‰‹åæ ‡
 typedef struct right_hand{
-	int x;
-	int y;
+    int x;
+    int y;
 } right_hand;
 
-// hand: ½á¹¹Ìå ÊÖµÄ×ø±ê
+// hand: ç»“æ„ä½“ æ‰‹çš„åæ ‡
 typedef struct hand{
-	left_hand	my_left_hand;
-	right_hand  my_right_hand;
+    left_hand    my_left_hand;
+    right_hand  my_right_hand;
 } hand;
+
 void GetHand(cv::Mat& edge, struct hand * my_hand);
+
+#endif // __HAND_H__

@@ -1,148 +1,144 @@
 #include "shoulderwidth.h"
 
-void pixSum(cv::Mat& edge, vector<int>& sum);							// ¼ÆËãºÚ°×¶şÖµÍ¼Ã¿Ò»ĞĞÏñËØµãµÄ¸öÊı
-void pixSum_side(cv::Mat& edge, vector<int> &sum);						// ²ÉÓÃ×óÓÒÏñËØ×ø±êÏà¼õµÄ·½·¨Çó ÏñËØÖµ = 255 µÄÏñËØµãµÄ¸öÊı
-void getGradient(vector<int>& sumpx, vector<double> &pointgradient);// ¼ÆËãÏñËØÊı×é `sum` µÄÌİ¶È£¬½á¹û±£´æÔÚvector `pointgradient`
-int  MaxGradient(vector<double>arr);								// Ñ°ÕÒÌİ¶ÈÊı×é `pointgradient`ÖĞµÄ×î´óÖµ
-
-
+void pixSum(cv::Mat& edge, vector<int>& sum);                        // è®¡ç®—é»‘ç™½äºŒå€¼å›¾æ¯ä¸€è¡Œåƒç´ ç‚¹çš„ä¸ªæ•°
+void pixSum_side(cv::Mat& edge, vector<int> &sum);                   // é‡‡ç”¨å·¦å³åƒç´ åæ ‡ç›¸å‡çš„æ–¹æ³•æ±‚ åƒç´ å€¼ = 255 çš„åƒç´ ç‚¹çš„ä¸ªæ•°
+void getGradient(vector<int>& sumpx, vector<double> &pointgradient); // è®¡ç®—åƒç´ æ•°ç»„ `sum` çš„æ¢¯åº¦ï¼Œç»“æœä¿å­˜åœ¨vector `pointgradient`
+int  MaxGradient(vector<double>arr);                                 // å¯»æ‰¾æ¢¯åº¦æ•°ç»„ `pointgradient`ä¸­çš„æœ€å¤§å€¼
 
 /*
  * void pixSum
- * funciton: ¼ÆËãÃ¿Ò»ĞĞÏñËØÖµÎª255µÄÏñËØµãµÄ×Ü¸öÊı
- * ²ÎÊı
- *    edge: Ô­Í¼Ïñ
- *    sum : ´æ´¢Ã¿Ò»ĞĞÏñËØÖµÎª 255 µÄÏñËØµãµÄ¸öÊı
+ * funciton: è®¡ç®—æ¯ä¸€è¡Œåƒç´ å€¼ä¸º255çš„åƒç´ ç‚¹çš„æ€»ä¸ªæ•°
+ * å‚æ•°
+ *    edge: åŸå›¾åƒ
+ *    sum : å­˜å‚¨æ¯ä¸€è¡Œåƒç´ å€¼ä¸º 255 çš„åƒç´ ç‚¹çš„ä¸ªæ•°
  */
 void pixSum(cv::Mat& edge, vector<int> &sum) {
-	cv::Mat outImage = edge.clone();
-	int rowNumber = outImage.rows;	//source image ĞĞÊı
-	int colNumber = outImage.cols;  //source image ÁĞÊı
-	int count = 0;					//count: ´æ´¢Ã¿Ò»ĞĞÏñËØÖµÎª255µÄÏñËØµÄ¸öÊı
+    cv::Mat outImage = edge.clone();
+    int rowNumber = outImage.rows;  //source image è¡Œæ•°
+    int colNumber = outImage.cols;  //source image åˆ—æ•°
+    int count = 0;                  //count: å­˜å‚¨æ¯ä¸€è¡Œåƒç´ å€¼ä¸º255çš„åƒç´ çš„ä¸ªæ•°
 
-									// Ë«²ãÑ­»·£¬±éÀúËùÓĞµÄÏñËØÖµ
-	for (int i = 0;i < rowNumber;i++) {       // ĞĞÑ­»·
-		uchar* data = outImage.ptr<uchar>(i); // »ñµÃµÚiĞĞµÄÊ×µØÖ·
-		count = 0;
-		for (int j = 0;j < colNumber;j++) {   // ÁĞÑ­»·
-			if (data[j] == 255) {
-				count++;
-			}
-		}
-		sum.push_back(count);
-	}
+    // åŒå±‚å¾ªç¯ï¼Œéå†æ‰€æœ‰çš„åƒç´ å€¼
+    for (int i = 0;i < rowNumber;i++) {       // è¡Œå¾ªç¯
+        uchar* data = outImage.ptr<uchar>(i); // è·å¾—ç¬¬iè¡Œçš„é¦–åœ°å€
+        count = 0;
+        for (int j = 0;j < colNumber;j++) {   // åˆ—å¾ªç¯
+            if (data[j] == 255) {
+                count++;
+            }
+        }
+        sum.push_back(count);
+    }
 }
 
 /*
  * void pixSum
- * funciton : Ã¿Ò»ĞĞÏñËØµÄÖµ£¬×ó±ßÒ»¸öÎª 255 µÄÏñËØµÄÎ»ÖÃ×ø±ê - ÓÒ±ßµÚÒ»¸öÏñËØÖµÎª 255µÄÏñËØµãµÄÎ»ÖÃ×ø±ê
- * ÓÃÓÚ´¦ÀíÒÔÏÂÇé¿ö  1. ÈËÌåÂÖÀª¼ì²âĞ§¹û½ÏºÃ 2.ÈËÌåÂÖÀªÄÚ²¿Ìî³äĞ§¹û²»¼Ñ
- * ²ÎÊı : edge: Ô­Í¼Ïñ
- * sum : ´æ´¢Ã¿Ò»ĞĞÏñËØÖµÎª 255 µÄÏñËØµãµÄ¸öÊı
+ * funciton : æ¯ä¸€è¡Œåƒç´ çš„å€¼ï¼Œå·¦è¾¹ä¸€ä¸ªä¸º 255 çš„åƒç´ çš„ä½ç½®åæ ‡ - å³è¾¹ç¬¬ä¸€ä¸ªåƒç´ å€¼ä¸º 255çš„åƒç´ ç‚¹çš„ä½ç½®åæ ‡
+ * ç”¨äºå¤„ç†ä»¥ä¸‹æƒ…å†µ  1. äººä½“è½®å»“æ£€æµ‹æ•ˆæœè¾ƒå¥½ 2.äººä½“è½®å»“å†…éƒ¨å¡«å……æ•ˆæœä¸ä½³
+ * å‚æ•° : edge: åŸå›¾åƒ
+ *   sum: å­˜å‚¨æ¯ä¸€è¡Œåƒç´ å€¼ä¸º 255 çš„åƒç´ ç‚¹çš„ä¸ªæ•°
  */
 void pixSum_side(cv::Mat& edge, vector<int> &sum) {
-	cv::Mat outImage = edge.clone();
-	int rowNumber = outImage.rows;	//ĞĞÊı
-	int colNumber = outImage.cols;  //ÁĞÊı
+    cv::Mat outImage = edge.clone();
+    int rowNumber = outImage.rows;  //è¡Œæ•°
+    int colNumber = outImage.cols;  //åˆ—æ•°
 
-	int targetPoint_Left = 0;  // ×ó±ßµÚÒ»¸öÏñËØÖµµÈÓÚ 255 µÄÏñËØµãµÄ×ø±ê
-	int targetPoint_Right = 0; // ÓÒ±ßµÚÒ»¸öÏñËØÖµµÈÓÚ 255 µÄÏñËØµãµÄ×ø±ê
+    int targetPoint_Left = 0;  // å·¦è¾¹ç¬¬ä¸€ä¸ªåƒç´ å€¼ç­‰äº 255 çš„åƒç´ ç‚¹çš„åæ ‡
+    int targetPoint_Right = 0; // å³è¾¹ç¬¬ä¸€ä¸ªåƒç´ å€¼ç­‰äº 255 çš„åƒç´ ç‚¹çš„åæ ‡
 
+    int count = 0; //count: å­˜å‚¨æ¯ä¸€è¡Œåƒç´ å€¼ä¸º255çš„åƒç´ çš„ä¸ªæ•°
+    // åŒå±‚å¾ªç¯ï¼Œéå†æ‰€æœ‰çš„åƒç´ å€¼
+    for (int i = 0;i < rowNumber;i++) {       // è¡Œå¾ªç¯
+        uchar* data = outImage.ptr<uchar>(i); // è·å¾—ç¬¬iè¡Œçš„é¦–åœ°å€
+        count = 0;
+        targetPoint_Left = 0;
+        targetPoint_Right = 0;
 
-	int count = 0; //count: ´æ´¢Ã¿Ò»ĞĞÏñËØÖµÎª255µÄÏñËØµÄ¸öÊı
-
-	// Ë«²ãÑ­»·£¬±éÀúËùÓĞµÄÏñËØÖµ
-	for (int i = 0;i < rowNumber;i++) {       // ĞĞÑ­»·
-		uchar* data = outImage.ptr<uchar>(i); // »ñµÃµÚiĞĞµÄÊ×µØÖ·
-		count = 0;
-		targetPoint_Left = 0;
-		targetPoint_Right = 0;
-
-		for (int j = 0;j < colNumber;j++) {   // ÁĞÑ­»·£¬Ñ°ÕÒ targetPoint_Left
-			if (data[j] == 255) {
-				targetPoint_Left = j;
-				break;
-			}
-		}
-		for (int j = colNumber - 1;j >= targetPoint_Left;j--) {   // ÁĞÑ­»·
-			if (data[j] == 255) {
-				targetPoint_Right = j;
-				break;
-			}
-		}
-		count = (targetPoint_Right - targetPoint_Left + 1);
-		sum.push_back(count);
-	}
+        for (int j = 0;j < colNumber;j++) { // åˆ—å¾ªç¯ï¼Œå¯»æ‰¾ targetPoint_Left
+            if (data[j] == 255) {
+                targetPoint_Left = j;
+                break;
+            }
+        }
+        for (int j = colNumber - 1;j >= targetPoint_Left;j--) { // åˆ—å¾ªç¯
+            if (data[j] == 255) {
+                targetPoint_Right = j;
+                break;
+            }
+        }
+        count = (targetPoint_Right - targetPoint_Left + 1);
+        sum.push_back(count);
+    }
 }
 
 /*
  * void getGradient();
- * function: ¼ÆËãÏñËØ¾ØÕóµÄÌİ¶È
- * ²ÎÊı:
- * vector<int>& sumpx: Ã¿Ò»ĞĞÏñËØÖµÎª 255 µÄ¸öÊı
- * vector<double>& pointgradient: ´æ´¢Ã¿Ò»ĞĞÏñËØµÄÌİ¶È
+ * function: è®¡ç®—åƒç´ çŸ©é˜µçš„æ¢¯åº¦
+ * å‚æ•°:
+ * vector<int>& sumpx: æ¯ä¸€è¡Œåƒç´ å€¼ä¸º 255 çš„ä¸ªæ•°
+ * vector<double>& pointgradient: å­˜å‚¨æ¯ä¸€è¡Œåƒç´ çš„æ¢¯åº¦
  */
 void getGradient(vector<int>& sumpx, vector<double> &pointgradient) {
-	size_t length = sumpx.size();
-	double count = 0; // ÁÙÊ±´æ´¢Ã¿Ò»ĞĞµÄÌİ¶È
-	if (length == 0) {
-		cout << "ÏñËØÊı¾İ´íÎó£¡" << endl;
-	}
-	else if (length == 1) {
-		count = sumpx[0];
-		pointgradient.push_back(count);
-	}
-	else if (length == 2) {
-		count = sumpx[1] - sumpx[0];
-		pointgradient.push_back(count);
-		pointgradient.push_back(count);
-	}
-	else {
-		// pointgradient[0]
-		count = (sumpx[1] - sumpx[0]);
-		pointgradient.push_back(count);
+    size_t length = sumpx.size();
+    double count = 0; // ä¸´æ—¶å­˜å‚¨æ¯ä¸€è¡Œçš„æ¢¯åº¦
+    if (length == 0) {
+        cout << "åƒç´ æ•°æ®é”™è¯¯ï¼" << endl;
+    }
+    else if (length == 1) {
+        count = sumpx[0];
+        pointgradient.push_back(count);
+    }
+    else if (length == 2) {
+        count = sumpx[1] - sumpx[0];
+        pointgradient.push_back(count);
+        pointgradient.push_back(count);
+    }
+    else {
+        // pointgradient[0]
+        count = (sumpx[1] - sumpx[0]);
+        pointgradient.push_back(count);
 
-		// pointgradient[1] ... pointgradient[length -2]
-		for (int i = 1; i < int(length - 1);i++) {
-			count = (sumpx[i + 1] - sumpx[i - 1]) * 1.0 / 2;
-			pointgradient.push_back(count);
-		}
+        // pointgradient[1] ... pointgradient[length -2]
+        for (int i = 1; i < int(length - 1);i++) {
+            count = (sumpx[i + 1] - sumpx[i - 1]) * 1.0 / 2;
+            pointgradient.push_back(count);
+        }
 
-		// pointgradient[length - 1]
-		count = (sumpx[length - 1] - sumpx[length - 2]);
-		pointgradient.push_back(count);
-	}
+        // pointgradient[length - 1]
+        count = (sumpx[length - 1] - sumpx[length - 2]);
+        pointgradient.push_back(count);
+    }
 }
 
 /*
  * int MaxGradient();
- * function:  Ñ°ÕÒÍ¼Æ¬Ç°°ë²¿·Ö£¬ÏñËØÌİ¶ÈµÄ×î´óÖµµÄ±àºÅ£¬´Ó¶øÕÒµ½ ¼ç°òËùÔÚµÄĞĞÊı 
- * ²ÎÊı	:
- *       vector<float>arr: Ìİ¶ÈÊı¾İ
+ * function:  å¯»æ‰¾å›¾ç‰‡å‰åŠéƒ¨åˆ†ï¼Œåƒç´ æ¢¯åº¦çš„æœ€å¤§å€¼çš„ç¼–å·ï¼Œä»è€Œæ‰¾åˆ° è‚©è†€æ‰€åœ¨çš„è¡Œæ•°
+ * å‚æ•°    :
+ *       vector<float>arr: æ¢¯åº¦æ•°æ®
  *
- * ´ı¸Ä½ø:
- * È¥³ı¸ÉÈÅÏî£¬±ÈÈç: Í·¶¥ ¿ÉÄÜÊÇÌİ¶È×î´óÖµµÄµã
+ * å¾…æ”¹è¿›:
+ * å»é™¤å¹²æ‰°é¡¹ï¼Œæ¯”å¦‚: å¤´é¡¶ å¯èƒ½æ˜¯æ¢¯åº¦æœ€å¤§å€¼çš„ç‚¹
  */
 int MaxGradient(vector<double>arr) {
-	size_t arr_length = 0;
-	double MaxGrad_value = 0; // Ìİ¶È×î´óÖµµÄÖµ 
-	int MaxGrad_number   = 0; // Ìİ¶È×î´óÖµµÄ±àºÅ
+    size_t arr_length = 0;
+    double MaxGrad_value = 0; // æ¢¯åº¦æœ€å¤§å€¼çš„å€¼ 
+    int MaxGrad_number   = 0; // æ¢¯åº¦æœ€å¤§å€¼çš„ç¼–å·
 
-	arr_length = arr.size();
-	// ¼ç°òÇøÓò£¬Ò»°ãÔÚÍ¼Æ¬µÄÉÏ°ë²¿·Ö£¬ËùÒÔÀíÂÛÉÏÖ»ĞèÑ°ÕÒ arr Êı×éÇ°°ë²¿·ÖµÄ×î´óÖµ
-	// arr_length /= 2;
-	//printf("arr_length : %d\n", arr_length);
+    arr_length = arr.size();
+    // è‚©è†€åŒºåŸŸï¼Œä¸€èˆ¬åœ¨å›¾ç‰‡çš„ä¸ŠåŠéƒ¨åˆ†ï¼Œæ‰€ä»¥ç†è®ºä¸Šåªéœ€å¯»æ‰¾ arr æ•°ç»„å‰åŠéƒ¨åˆ†çš„æœ€å¤§å€¼
+    // arr_length /= 2;
+    //printf("arr_length : %d\n", arr_length);
 
-	for (int i = 0;i < int(arr_length);i++) {
-		if (arr[i] > 0) {
-			//for (i = i + 200; i < int(arr_length); i++) {
-			for (;i < int(arr_length);i++) {
-				if (arr[i] > MaxGrad_value) {
-					MaxGrad_value = arr[i];
-					MaxGrad_number = i;
-				}
-			}
-		}
-	}
-	return MaxGrad_number;
+    for (int i = 0;i < int(arr_length);i++) {
+        if (arr[i] > 0) {
+            //for (i = i + 200; i < int(arr_length); i++) {
+            for (;i < int(arr_length);i++) {
+                if (arr[i] > MaxGrad_value) {
+                    MaxGrad_value = arr[i];
+                    MaxGrad_number = i;
+                }
+            }
+        }
+    }
+    return MaxGrad_number;
 }

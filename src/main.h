@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __MAIN_H__
+#define __MAIN_H__
+
 #include "/usr/local/include/opencv2/opencv.hpp"
 #include "/usr/local/include/opencv2/highgui/highgui.hpp"
 #include "/usr/local/include/opencv2/imgproc/imgproc.hpp"
@@ -8,12 +10,12 @@
 #include <fstream>
 
 /*
- * converttobinary.h	×ªÔ­Í¼ÎªºÚ°×¶şÖµÍ¼
- * shoulderwidth.h		Çó¼ç¿í
- * side_height.h		´Ó²àÃæÍ¼£¬ÇóÈËÌåÉí¸ß
- * armpoint.h			Çó¸ì²²·Ö²æµãµÄ×ø±ê [ ×ó¸ì²² + ÓÒ¸ì²² ]
- * bodypostion.h		½«ÈËÌå½á¹¹·ÖÇø [ head¡¢neck¡¢armpit¡¢hand¡¢legpoint¡¢foot ]
- * waist.h				²âÁ¿ÈËÌåÑüÎ§
+ * converttobinary.h    è½¬åŸå›¾ä¸ºé»‘ç™½äºŒå€¼å›¾
+ * shoulderwidth.h      æ±‚è‚©å®½
+ * side_height.h        ä»ä¾§é¢å›¾ï¼Œæ±‚äººä½“èº«é«˜
+ * armpoint.h           æ±‚èƒ³è†Šåˆ†å‰ç‚¹çš„åæ ‡ [ å·¦èƒ³è†Š + å³èƒ³è†Š ]
+ * bodypostion.h        å°†äººä½“ç»“æ„åˆ†åŒº [ headã€neckã€armpitã€handã€legpointã€foot ]
+ * waist.h              æµ‹é‡äººä½“è…°å›´
  */
 
 #include "converttobinary.h"
@@ -26,3 +28,5 @@
 using namespace std;
 
 cv::Mat show(cv::Mat edge, int x, int y);
+
+#endif // #define __MAIN_H__

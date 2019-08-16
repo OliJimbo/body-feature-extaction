@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __SIDE_HEIGHT_H__
+#define __SIDE_HEIGHT_H__
+
 #include "/usr/local/include/opencv2/opencv.hpp"
 #include "/usr/local/include/opencv2/highgui/highgui.hpp"
 #include "/usr/local/include/opencv2/imgproc/imgproc.hpp"
@@ -9,10 +11,12 @@
 using namespace std;
 
 /*
- * ÔËËã¶ÔÏó: ÈËÌå²àÃæÍ¼
- * º¯Êı×÷ÓÃ£º¼ÆËãÒ»¸öÏñËØ¶ÔÓ¦µÄ³ß´ç
- * ·½·¨£º
- *		1. ¼ÆËã²àÃæÍ¼£¬Éí¸ßÏñËØµãµÄ¸öÊı
- *		2. ¸ù¾İÈËÌåµÄÊµ¼ÊÉí¸ß£¬½øÒ»²½¼ÆËã³öÒ»¸öÏñËØ¶ÔÓ¦Êµ¼Ê³¤¶ÈµÄ´óĞ¡
+ * è¿ç®—å¯¹è±¡: äººä½“ä¾§é¢å›¾
+ * å‡½æ•°ä½œç”¨ï¼šè®¡ç®—ä¸€ä¸ªåƒç´ å¯¹åº”çš„å°ºå¯¸
+ * æ–¹æ³•ï¼š
+ *        1. è®¡ç®—ä¾§é¢å›¾ï¼Œèº«é«˜åƒç´ ç‚¹çš„ä¸ªæ•°
+ *        2. æ ¹æ®äººä½“çš„å®é™…èº«é«˜ï¼Œè¿›ä¸€æ­¥è®¡ç®—å‡ºä¸€ä¸ªåƒç´ å¯¹åº”å®é™…é•¿åº¦çš„å¤§å°
  */
 void GetRatio(cv::Mat& edge, double height, double* Pix_Ratio);
+
+#endif // __SIDE_HEIGHT_H__

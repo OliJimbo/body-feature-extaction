@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __POINT_GRADIENT_H_
+#define __POINT_GRADIENT_H_
+
 #include "/usr/local/include/opencv2/opencv.hpp"
 #include "/usr/local/include/opencv2/highgui/highgui.hpp"
 #include "/usr/local/include/opencv2/imgproc/imgproc.hpp"
@@ -6,17 +8,17 @@
 #include <iostream>
 #include <vector>
 
-#define INF 100000 // Èç¹ûÁ½µãºá×ø±êÏàµÈ£¬Ğ±ÂÊÎŞÏŞ´ó£¬ÉèÎª INF
+#define INF 100000 // å¦‚æœä¸¤ç‚¹æ¨ªåæ ‡ç›¸ç­‰ï¼Œæ–œç‡æ— é™å¤§ï¼Œè®¾ä¸º INF
 
 using namespace std;
 /*
- * Çó°ë²àÉíÌåµãÖ®¼äµÄĞ±ÂÊ£¬Ñ°ÕÒ²îÒìµã
+ * æ±‚åŠä¾§èº«ä½“ç‚¹ä¹‹é—´çš„æ–œç‡ï¼Œå¯»æ‰¾å·®å¼‚ç‚¹
  *
  */
 
 typedef struct DstPoint {
-	int x; // ºá×ø±ê
-	int y; // ×İ×ø±ê
+    int x; // æ¨ªåæ ‡
+    int y; // çºµåæ ‡
 } DstPoint;
 
 
@@ -24,3 +26,5 @@ void Get_Left_PointGradient (cv::Mat& edge, vector<DstPoint> &Left_Gradient_Coll
 void Get_Right_PointGradient(cv::Mat& edge, vector<DstPoint> &Right_Gradient_Collection);
 
 double get_gradient(DstPoint p1, DstPoint p2);
+
+#endif // __POINT_GRADIENT_H_

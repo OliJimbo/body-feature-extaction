@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __ARM_POINT_H__
+#define __ARM_POINT_H__
+
 #include "/usr/local/include/opencv2/opencv.hpp"
 #include "/usr/local/include/opencv2/highgui/highgui.hpp"
 #include "/usr/local/include/opencv2/imgproc/imgproc.hpp"
@@ -8,30 +10,31 @@
 
 using namespace std;
 /*
- * ÔËËã¶ÔÏó£ºÈËÌåÕıÊÓÍ¼
- * º¯Êı×÷ÓÃ: ¼ÆËã¸ì²²·Ö²æµãµÄ×ø±ê
- * ¼ÆËã·½·¨£ºÀàËÆÓÚ¼ÆËãË«ÍÈ·Ö²æµãµÄ×ø±ê
+ * è¿ç®—å¯¹è±¡ï¼šäººä½“æ­£è§†å›¾
+ * å‡½æ•°ä½œç”¨: è®¡ç®—èƒ³è†Šåˆ†å‰ç‚¹çš„åæ ‡
+ * è®¡ç®—æ–¹æ³•ï¼šç±»ä¼¼äºè®¡ç®—åŒè…¿åˆ†å‰ç‚¹çš„åæ ‡
  */
 
-
-// allarmpit Ò¸ÎÑµÄ×ø±ê
+// allarmpit è…‹çªçš„åæ ‡
 typedef struct allarmpit {
-	int x;
-	int y;
+    int x;
+    int y;
 } allarmpit;
 
-// armpit Ò¸ÎÑµÄ×ø±ê
+// armpit è…‹çªçš„åæ ‡
 typedef struct armpit {
-	struct allarmpit leftarmpit;
-	struct allarmpit rightarmpit;
+    struct allarmpit leftarmpit;
+    struct allarmpit rightarmpit;
 } armpit;
 
-// armpit ÆğÊ¼ËÑË÷µã
+// armpit èµ·å§‹æœç´¢ç‚¹
 typedef struct find_armpit_start_line {
-	int left_start_line;
-	int right_start_line;
+    int left_start_line;
+    int right_start_line;
 } find_armpit_start_line;
 
 void GetArmpit(cv::Mat& edge, const struct find_armpit_start_line * start_line, struct armpit * my_armpit);
 void get_left_arm_point (cv::Mat& edge, int start_line, struct allarmpit * left_arm);
 void get_right_arm_point(cv::Mat& edge, int start_line, struct allarmpit * right_arm);
+
+#endif // __ARM_POINT_H__

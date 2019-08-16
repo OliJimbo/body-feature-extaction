@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __FRONT_HEIGHT_H_
+#define __FRONT_HEIGHT_H_
+
 #include "/usr/local/include/opencv2/opencv.hpp"
 #include "/usr/local/include/opencv2/highgui/highgui.hpp"
 #include "/usr/local/include/opencv2/imgproc/imgproc.hpp"
@@ -9,11 +11,13 @@
 using namespace std;
 
 /*
- * ÔËËã¶ÔÏó: ÈËÌåÕıÃæÍ¼
- * º¯Êı×÷ÓÃ£º¼ÆËãÈËÌåÕıÃæÍ¼ Í·¶¥µÄ×ø±ê ºÍ ½Åµ×µÄ×ø±ê
- * ·½·¨£º
- *	¼ÆËãÕıÃæÍ¼
- *	ÖÁÉÏ¶øÏÂ±éÀúÏñËØµã£¬µÚÒ»¸ö 255 µÄÏñËØµã¶¨ÒåÎª head
- *	ÖÁÏÂ¶øÉÏ±éÀúÏñËØµã£¬µÚÒ»¸ö 255 µÄÏñËØµã¶¨ÒåÎª foot
+ * è¿ç®—å¯¹è±¡: äººä½“æ­£é¢å›¾
+ * å‡½æ•°ä½œç”¨ï¼šè®¡ç®—äººä½“æ­£é¢å›¾ å¤´é¡¶çš„åæ ‡ å’Œ è„šåº•çš„åæ ‡
+ * æ–¹æ³•ï¼š
+ *    è®¡ç®—æ­£é¢å›¾
+ *    è‡³ä¸Šè€Œä¸‹éå†åƒç´ ç‚¹ï¼Œç¬¬ä¸€ä¸ª 255 çš„åƒç´ ç‚¹å®šä¹‰ä¸º head
+ *    è‡³ä¸‹è€Œä¸Šéå†åƒç´ ç‚¹ï¼Œç¬¬ä¸€ä¸ª 255 çš„åƒç´ ç‚¹å®šä¹‰ä¸º foot
  */
 void GetHeight(cv::Mat& edge, int * head, int * foot);
+
+#endif // __FRONT_HEIGHT_H_

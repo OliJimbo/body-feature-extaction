@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __WAIST_H__
+#define __WAIST_H__
+
 #include "/usr/local/include/opencv2/opencv.hpp"
 #include "/usr/local/include/opencv2/highgui/highgui.hpp"
 #include "/usr/local/include/opencv2/imgproc/imgproc.hpp"
@@ -7,23 +9,25 @@
 #include <vector>
 
 /*
- * Ñ°ÕÒÑü²¿×ø±ê
- *		ËÑË÷Çø¼ä A [Ò¸ÎÑ, Ë«ÍÈ·Ö²æµã] 
- *		·½·¨: ±éÀú A Çø¼ä, ¼ÇÂ¼Ã¿ĞĞÏñËØµãµÄ×ÜÊı(²»°üÀ¨ÊÖ±Û)£¬ÏñËØ×îÉÙµÄ¼´Îª Ñü²¿
+ * å¯»æ‰¾è…°éƒ¨åæ ‡
+ *     æœç´¢åŒºé—´ A [è…‹çª, åŒè…¿åˆ†å‰ç‚¹] 
+ *     æ–¹æ³•: éå† A åŒºé—´, è®°å½•æ¯è¡Œåƒç´ ç‚¹çš„æ€»æ•°(ä¸åŒ…æ‹¬æ‰‹è‡‚)ï¼Œåƒç´ æœ€å°‘çš„å³ä¸º è…°éƒ¨
  *
  */
 
 // position of single point
 typedef struct point {
-	int x;
-	int y;
+    int x;
+    int y;
 } point;
 
 // Area which find the waist
 typedef struct FindArea {
-	int UpperLimit;
-	point LowerLimit;
+    int UpperLimit;
+    point LowerLimit;
 } FindArea;
 
 // function to get waist width: return "waist width"
 int FindWaist(cv::Mat& edge, const FindArea WaistArea);
+
+#endif // __WAIST_H__
