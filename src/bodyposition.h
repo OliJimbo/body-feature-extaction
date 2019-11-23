@@ -14,9 +14,9 @@
 
 /*
  * bodyp: 存储body不同区段的坐标
- * 
+ *
  * 以人体左半边身体为标定，如，左胳膊，左手，左脚
- * (注: 已右半边身体为研究对象，同样可行)
+ * (注: 以右半边身体为研究对象，同样可行)
  */
 typedef struct bodyp{
     int head;                    // 头顶
@@ -24,7 +24,7 @@ typedef struct bodyp{
     struct armpit    my_armpit;  // 胳肢窝
     struct hand      my_hand;    // 左手坐标 和 右手坐标
     struct livepoint legpoint;   // 双腿分叉点的坐标
-    int foot;                    // 脚底 
+    int foot;                    // 脚底
 } bodyp;
 
 /*

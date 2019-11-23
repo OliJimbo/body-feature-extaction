@@ -20,19 +20,19 @@ using namespace std;
  */
 
 // left_hand: 结构体 左手坐标
-typedef struct left_hand{
+typedef struct left_hand {
     int x;
     int y;
 } left_hand;
 
 // right_hand: 结构体 右手坐标
-typedef struct right_hand{
+typedef struct right_hand {
     int x;
     int y;
 } right_hand;
 
 // hand: 结构体 手的坐标
-typedef struct hand{
+typedef struct hand {
     left_hand    my_left_hand;
     right_hand  my_right_hand;
 } hand;

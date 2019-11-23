@@ -1,5 +1,11 @@
 # Change History of BodyFE
 
+## Version 2.0.2
+
+2019年11月24日
+
+* code opt.
+
 ## Version 2.0.1
 
 2019年8月17日

@@ -32,7 +32,7 @@ void Get_Left_PointGradient(cv::Mat& edge, vector<DstPoint> &Left_Gradient_Colle
     int rowNumber = outImage.rows;  //行数
     int colNumber = outImage.cols;  //列数
 
-    /* 
+    /*
      * p1 : 前一个节点
      * p2 : 后一个节点
      */
@@ -100,7 +100,6 @@ void Get_Right_PointGradient(cv::Mat& edge, vector<DstPoint> &Right_Gradient_Col
     // 双层循环，遍历所有的像素值
     for (int i = 0; i < rowNumber; i = i + 1) { // 行循环
         uchar* data = outImage.ptr<uchar>(i);   // 获得第i行的首地址
-
 
         for (int j = colNumber - 1; j >= 0; j--) { // 列循环
             if (data[j] == 255) {

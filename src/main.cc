@@ -1,5 +1,5 @@
 /*
- * Arthor: Yiming Sun
+ * Arthor: Sun Yiming
  * Date:   May 8th, 2017
  * Email:  guguant@yahoo.com
  *
@@ -11,15 +11,39 @@
  * All rights reserved.
  */
 
-#include "../main.h"
+#include "/usr/local/include/opencv2/opencv.hpp"
+#include "/usr/local/include/opencv2/highgui/highgui.hpp"
+#include "/usr/local/include/opencv2/imgproc/imgproc.hpp"
 
-cv::Mat show(cv::Mat edge, int x, int y);
-cv::Mat draw_position(cv::Mat edge, int line);
+#include <iostream>
+#include <vector>
+#include <fstream>
 
+/*
+ * converttobinary.h    转原图为黑白二值图
+ * shoulderwidth.h      求肩宽
+ * side_height.h        从侧面图，求人体身高
+ * armpoint.h           求胳膊分叉点的坐标 [ 左胳膊 + 右胳膊 ]
+ * bodypostion.h        将人体结构分区 [ head、neck、armpit、hand、legpoint、foot ]
+ * waist.h              测量人体腰围
+ */
+
+#include "converttobinary.h"
+#include "shoulderwidth.h"
+#include "side_height.h"
+#include "bodyposition.h"
+#include "point_gradient.h"
+#include "waist.h"
+
+using namespace std;
+
+static cv::Mat show(cv::Mat edge, int x, int y);
+static cv::Mat draw_position(cv::Mat edge, int line);
+
+// __entry function
 int main()
 {
-
-    /* 
+    /*
      * while循环: 输入原图片，进行测试，检测测试效果
      *        while (char(waitKey(1)) != 'q') { } // 按 'q' 键退出while循环
      * 按 'q' 键退出while循环; 关闭窗口, 即可输入下一张图片
@@ -40,10 +64,10 @@ int main()
         // 读取图片 ImageName
         srcImage = cv::imread(ImageName);
 
-        /* 
+        /*
          * while(!srcImage.data){ }: 获取正确的图片文件路径
          */
-         while (!srcImage.data) { 
+         while (!srcImage.data) {
             cout << "error to read image." << endl;
             cout << "input again: ";
             cin >> ImageName;
@@ -89,13 +113,13 @@ int main()
         WaistArea.LowerLimit.x = pp.legpoint.x;
         WaistArea.LowerLimit.y = pp.legpoint.y;
 
-        int WaistWidth = 0; 
+        int WaistWidth = 0;
         WaistWidth = FindWaist(Dst, WaistArea);
         cout << "Waist Width  : " << WaistWidth <<  endl;
         /*****************************************************************/
 
         /*
-         * 划分区域 
+         * 划分区域
          */
         // head
         draw_position(DSTSHOW, pp.head);
@@ -111,7 +135,7 @@ int main()
         /**************  斜率特征点  *************************************/
         vector <DstPoint> Left_Gradient_Collection;
         Get_Left_PointGradient(Dst, Left_Gradient_Collection);
-        
+
         int length_Left_Gradient_Collection = Left_Gradient_Collection.size();
 
         for (int i = 0; i < length_Left_Gradient_Collection; i++) {
@@ -147,7 +171,7 @@ int main()
         pixSum(Dst, sum);        // 方法1：遍历像素; vector<int>sum 保存每一行目标像素点的总数
         //pixSum_side(Dst, sum); // 方法2: body两端开始逼近，求左右端点坐标的差值
 
-        /* 
+        /*
          * vector <int> pointgradient: 保存每一行像素数据的梯度
          * getGradient():              计算 sum 数据集的数据梯度
          */
@@ -170,7 +194,7 @@ int main()
          * 获取肩膀的位置
          * flag: 存储梯度最大值的行数
          */
-        int flag = 0; 
+        int flag = 0;
         flag = MaxGradient(pointgradient);
 
         // 输出计算结果
@@ -199,12 +223,12 @@ int main()
         int pheight = GetSystemMetrics(SM_CYSCREEN); // 显示屏高度
 
         // the height of source image is lower than height of the Srceen
-        if (srcImage.rows < pheight) 
+        if (srcImage.rows < pheight)
         {
             imshow(ImageName, DSTSHOW);
         }
         // height of the source image is higher than height of the Screen, 缩小显示 source image
-        else { 
+        else {
             int zoom = (srcImage.rows / pheight) + 1;
             resize(DSTSHOW, temp1, cv::Size(int(srcImage.cols / zoom), int(srcImage.rows / zoom)), (0, 0), (0, 0), 3);
             imshow(ImageName, temp1);
@@ -238,10 +262,8 @@ int main()
     return 0;
 }
 
-cv::Mat show(cv::Mat edge, int x, int y) {
-    int i = 0, j = 0;
+static cv::Mat show(cv::Mat edge, int x, int y) {
     int move = 5;
-
     // 获取 第y行 的首地址
     uchar *data1 = edge.ptr<uchar>(y);
 
@@ -250,17 +272,17 @@ cv::Mat show(cv::Mat edge, int x, int y) {
         data1[i] = 180;
     }
 
-    // 改变 { x, [y - move, y + move ] } 像素值的大小 
+    // 改变 { x, [y - move, y + move ] } 像素值的大小
     for (int i = y - move; i < y + move; i++) {
 
         // 获取 第i行的 首地址
-        uchar *data2 = edge.ptr<uchar>(i); // 
-        data2[x] = 180; // 
+        uchar *data2 = edge.ptr<uchar>(i); //
+        data2[x] = 180; //
     }
     return (edge);
 }
 
-cv::Mat draw_position(cv::Mat edge, int line) {
+static cv::Mat draw_position(cv::Mat edge, int line) {
     uchar* data_area = edge.ptr<uchar>(line);
     for (int i = 0; i < edge.cols; i++) {
         data_area[i] = 133;
