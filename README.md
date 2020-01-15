@@ -7,7 +7,7 @@ The Project [Body-Feature-Extaction](https://github.com/Guguant/Body-Feature-Ext
 
 ## Featuers
 * non-contact
-* very, very, very easy, just take two ptotos.
+* very, very, very easy, just take two photos.
 
 ## Usage
 1. setup OpenCv Vision library
