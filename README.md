@@ -35,7 +35,7 @@ Email: guguant[you know]yahoo[dot]com
 
 ## Licensing
 BodyFE is released under Commercial and [GNU GPL v.3](https://www.gnu.org/licenses/gpl-3.0.en.html) open source license.
-Commercial Projects: [Contact me for commercial license.] (guguant[at]yahoo.com)
+Commercial Projects: [Contact me for commercial license.] (guguant[at]yahoo[dot]com)
 
 ## Contributions
 To submit contributions and send GitHub pull request. You retain the copyright on your contributions.
