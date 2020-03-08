@@ -7,7 +7,7 @@
  * It can self-collect the key data through a front and side image.
  * BodyEdgeDetection is only used in Eduction.
  *
- * Copyright (c) 2017- 2019 Sun Yiming <guguant@yahoo.com>
+ * Copyright (c) 2017- 2019 Sun Yiming <zscandyz[at]gmail[dot]com>
  * All rights reserved.
  */
 
