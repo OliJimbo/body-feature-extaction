@@ -50,7 +50,7 @@ void get_BinaryImage(const cv::Mat srcImage, cv::Mat &dstBw) {
         fillHole(edge_temp, edge);
         edge_temp = edge;
     }
-    threshold(edge_temp, edge, 150, 255, CV_THRESH_BINARY); // 图像二值化
+    threshold(edge_temp, edge, 150, 255, THRESH_BINARY); // 图像二值化
                                                             //blur(edge, edge, Size(3, 3));    //3x3内核降噪
 
     cv::Mat Dst = cv::Mat::zeros(edge.size(), CV_8UC1);
