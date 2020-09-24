@@ -8,6 +8,7 @@ link_directories( /usr/local/lib/ )
 aux_source_directory(src/ BASE_SOURCE)
 
 set(LIBS xml2  opencv_core opencv_highgui opencv_imgproc)
+set (CMAKE_CXX_STANDARD 11)
 
 add_executable (bodyEdgeD ${BASE_SOURCE})
 target_link_libraries(bodyEdgeD ${LIBS})
