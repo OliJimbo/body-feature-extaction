@@ -1,9 +1,9 @@
 #ifndef __WAIST_H__
 #define __WAIST_H__
 
-#include "/usr/local/include/opencv2/opencv.hpp"
-#include "/usr/local/include/opencv2/highgui/highgui.hpp"
-#include "/usr/local/include/opencv2/imgproc/imgproc.hpp"
+#include "/usr/local/Cellar/opencv@2/2.4.13.7_11/include/opencv2/opencv.hpp"
+#include "/usr/local/Cellar/opencv@2/2.4.13.7_11/include/opencv2/highgui/highgui.hpp"
+#include "/usr/local/Cellar/opencv@2/2.4.13.7_11/include/opencv2/imgproc.hpp"
 
 #include <iostream>
 #include <vector>
